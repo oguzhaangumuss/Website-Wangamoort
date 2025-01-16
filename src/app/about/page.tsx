@@ -5,29 +5,29 @@ export default function AboutPage() {
     {
       title: "Quality and Trust",
       content: "We are a dedicated provider of high-quality furniture, appliances, and household essentials, proudly serving Sydney and its surrounding areas. Whether you're a business managing large-scale projects or an individual upgrading your home, we deliver tailored solutions designed to meet your unique needs. Our commitment to quality, speed, and exceptional customer service sets us apart, ensuring every client enjoys a seamless and satisfying experience.",
-      image: "/quality.jpg"
+      image: "/about/quality.jpeg"
     },
     {
       title: "Wide Product Range",
       content: "Our product range includes over 500 carefully selected items, from modern furniture and home appliances to commercial kitchen equipment and office essentials. Through trusted partnerships with leading manufacturers, we offer products that combine durability, style, and affordability. Every item we supply is chosen with precision to meet the highest standards, allowing us to cater to homes, offices, and businesses of all sizes.",
-      image: "/products.jpg"
+      image: "/about/products3.jpeg"
     },
     {
       title: "Professional Service",
       content: "At the heart of our service is convenience. We handle every step of the process—from delivery to professional installation and rubbish removal. Our expert team ensures that all products are installed correctly, tested thoroughly, and ready for use. We also provide tailored advice to help you select items that perfectly match your space and requirements, whether it's a cozy apartment, a spacious office, or a bustling commercial kitchen.",
-      image: "/service.jpg"
+      image: "/about/installation.jpeg"
     },
     {
       title: "Local Understanding",
       content: "Operating locally in Sydney, we understand the specific needs of our community. Our goal is to offer a comprehensive, stress-free service that saves you time and effort while ensuring you receive the best value for your investment. With competitive pricing, exclusive bulk order discounts, and a focus on customer satisfaction, we are committed to being your trusted partner in furnishing and appliance solutions.",
-      image: "/local.jpg"
+      image: "/womanworker.jpeg"
     }
   ]
 
   return (
-    <main className="pt-24 bg-white">
+    <main className="bg-white">
       {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center">
+      <section className="relative h-[60vh] flex items-center mt-[64px]">
         <Image
           src="/wangamoort3.jpeg"
           alt="About Wangamoort"

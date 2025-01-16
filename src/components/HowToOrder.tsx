@@ -39,17 +39,6 @@ export default function HowToOrder() {
   return (
     <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 max-w-[1400px]">
-        {/* Hero Image */}
-        <div className="relative w-full h-[400px] mb-16 rounded-2xl overflow-hidden">
-          <Image
-            src="/wangamoort-house.jpeg"
-            alt="Wangamoort Furniture Delivery Service"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/20" />
-        </div>
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center mb-12">
           <h2 className="text-4xl font-bold text-[#152e1b] mb-4 tracking-tight">
@@ -59,7 +48,7 @@ export default function HowToOrder() {
         </div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-16">
           {steps.map((step, index) => {
             const Icon = step.icon
             return (
@@ -84,7 +73,6 @@ export default function HowToOrder() {
                     <Icon />
                   </div>
                 </div>
-                
 
                 {/* Content */}
                 <h3 className="text-xl font-bold text-[#152e1b] mb-2 tracking-tight">
@@ -93,22 +81,29 @@ export default function HowToOrder() {
                 <p className="text-gray-600 leading-relaxed text-base">
                   {step.description}
                 </p>
-                
 
                 {/* Connector Line */}
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-0.5 
                     bg-gray-300 transform -translate-y-1/2" />
                 )}
-                
               </div>
-              
             )
           })}
         </div>
+
+        {/* Hero Image - moved to bottom */}
+        <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
+          <Image
+            src="/images/about-us/quality/qualityYellow3.jpg"
+            alt="Wangamoort Furniture Delivery Service"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/20" />
+        </div>
       </div>
-      
     </section>
-    
   )
 } 

@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { FaArrowRight } from 'react-icons/fa'
+import Link from 'next/link'
 
 type Product = {
   id: number
@@ -148,6 +149,7 @@ export default function Products() {
 
         {/* View More Button */}
         <div className="text-center mt-12">
+
           <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 
             transition-colors duration-300 shadow-lg flex items-center mx-auto">
             View All Products

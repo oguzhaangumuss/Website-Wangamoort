@@ -22,16 +22,6 @@ A modern, responsive website for Wangamoort Furniture, a furniture and appliance
 - **Images:** Next/Image optimization
 - **Deployment:** Vercel
 
-## 🏗 Project Structure
-
-wangamoort-website/
-├── public/ # Static assets
-├── src/
-│ ├── app/ # Next.js app router
-│ ├── components/ # React components
-│ └── styles/ # Global styles
-└── types/ # TypeScript types
-
 ## 🚀 Getting Started
 
 1. Clone the repository:
@@ -83,8 +73,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 #Oğuzhan Gümüş
 
-- GitHub: [@oguzhaangumus](https://github.com/oguzhaangumus)
-- LinkedIn: [oguzhaangumus](https://linkedin.com/in/oguzhaangumus)
+- GitHub: [@oguzhaangumuss](https://github.com/oguzhaangumuss)
+- LinkedIn: [oguzhaangumuss](https://linkedin.com/in/oguzhaangumuss)
 
 ## 🙏 Acknowledgments
 

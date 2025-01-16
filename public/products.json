@@ -1,0 +1,56 @@
+{
+    "products": {
+        "category": {
+            "bedroom": {
+                "metriss": [
+                    "id": 1,
+                    "name": "Metriss zart zurt",
+                    "image": "/products/bedroom-1.jpg",
+                    "size": "king size",
+                    "price": "Contact for price",
+                    "category": "bedroom"
+                ]
+            },
+            "living": {
+                "sofa": [
+                    "id": "2",
+                    "name": "Metriss zart zurt",
+                    "image": "/products/bedroom-1.jpg",
+                    "size": "king size",
+                    "price": "Contact for price",
+                    "category": "living"
+                ]
+            },
+            "dining": {
+                "table": [
+                    "id": 1,
+                    "name": "Metriss zart zurt",
+                    "image": "/products/bedroom-1.jpg",
+                    "size": "king size",
+                    "price": "Contact for price",
+                    "category": "dining"
+                ]
+            },
+            "office": {
+                "chair": [
+                    "id": 1,
+                    "name": "Metriss zart zurt",
+                    "image": "/products/bedroom-1.jpg",
+                    "size": "king size",
+                    "price": "Contact for price",
+                    "category": "office"
+                ]
+            },
+            "outdoor": {
+                "chair": [
+                    "id": 1,
+                    "name": "Metriss zart zurt",
+                    "image": "/products/bedroom-1.jpg",
+                    "size": "king size",
+                    "price": "Contact for price",
+                    "category": "outdoor"
+                ]
+            }
+        }
+    }
+}

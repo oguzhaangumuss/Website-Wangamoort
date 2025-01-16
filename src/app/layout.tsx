@@ -3,6 +3,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { FaWhatsapp, FaShoppingCart } from 'react-icons/fa'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
+import content from '../../public/content.json'
+import { createSlug } from '@/utils/slugify'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -54,36 +57,32 @@ export default function RootLayout({
                     </svg>
                   </button>
 
-                  {/* Dropdown Menu */}
                   <div className="absolute left-0 mt-2 w-72 bg-white rounded-lg shadow-lg opacity-0 invisible
                     group-hover:opacity-100 group-hover:visible transition-all duration-300 transform
                     group-hover:translate-y-0 translate-y-2 z-50">
                     <div className="p-4">
-                      {[
-                        'Furniture & Appliances Supply',
-                        'Delivery Services',
-                        'Professional Installation',
-                        'Rubbish Removal',
-                        'Expert Advice & Customization'
-                      ].map((service, index) => (
-                        <a
+                      {content.services.map((service, index) => (
+                        <Link
                           key={index}
-                          href={`/services#${service.toLowerCase().replace(/\s+/g, '-')}`}
+                          href={`/services/${service.slug}`}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600
                             rounded-md transition-colors"
                         >
-                          • {service}
-                        </a>
+                          • {service.title}
+                        </Link>
                       ))}
                     </div>
                   </div>
                 </div>
 
                 {/* Products Link */}
-                <a href="/products" className="text-gray-700 hover:text-blue-600 transition-colors
-                  font-medium tracking-wide text-sm">
+                <Link 
+                  href="/products" 
+                  className="text-gray-700 hover:text-blue-600 transition-colors
+                    font-medium tracking-wide text-sm"
+                >
                   PRODUCTS
-                </a>
+                </Link>
 
                 {/* Contact Link */}
                 <a href="/contact" className="text-gray-700 hover:text-blue-600 transition-colors

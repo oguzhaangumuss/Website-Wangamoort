@@ -13,14 +13,16 @@ export default function Home() {
       {/* Services Section */}
       <Services />
 
-       {/* About Us Section */}
-       <AboutUs />
-
       {/* How To Order Section */}
       <HowToOrder />
 
       {/* Products Section */}
       <Products />
+
+      {/* About Us Section */}
+      <AboutUs />
+
+      {/* Why Choose Us Section */}
     </div>
   )
 } 
