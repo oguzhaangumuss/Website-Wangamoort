@@ -34,12 +34,10 @@ async function getProduct(slug: string) {
 }
 
 type Props = {
-  params: {
-    slug: string
-  }
+  params: { slug: string }
 }
 
-export default async function ProductPage({ params }: Props) {
+export default async function ProductPage({ params }: { params: { slug: string } }) {
   const product = await getProduct(params.slug)
 
   if (!product) {
@@ -47,4 +45,4 @@ export default async function ProductPage({ params }: Props) {
   }
 
   return <ProductDetail product={product} variant={product.variants?.[0]} />
-} 
+}
