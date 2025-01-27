@@ -25,7 +25,7 @@ const features = [
   },
   {
     title: 'Expert Support',
-    description: 'From product selection to space customization, we provide tailored advice and solutions to suit your needs, whether you\'re an individual or a business.',
+    description: 'From product selection to space customization, we provide tailored advice and solutions to suit your needs, whether you&apos;re an individual or a business.',
     icon: FaHeadset
   },
   {

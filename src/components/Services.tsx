@@ -11,7 +11,7 @@ export default function Services() {
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-4xl font-bold text-[#152e1b] mb-5">OUR SERVICES</h2>
           <p className="text-lg text-gray-600 leading-relaxed">
-          We specialize in delivering tailored furniture and appliance solutions for businesses and institutions such as NDIS providers, real estate agencies, Airbnb hosts, hostels, restaurants, and government organizations. Whether you're furnishing a single space or an entire facility, our services are designed to meet your unique needs with quality, efficiency, and reliability. We&apos;re committed to ...
+          We specialize in delivering tailored furniture and appliance solutions for businesses and institutions such as NDIS providers, real estate agencies, Airbnb hosts, hostels, restaurants, and government organizations. Whether you&apos;re furnishing a single space or an entire facility, our services are designed to meet your unique needs with quality, efficiency, and reliability. We&apos;re committed to providing ...
           </p>
         </div>
         

@@ -220,7 +220,7 @@ export default async function SubcategoryPage({
                   No Products Found
                 </h3>
                 <p className="text-gray-600 mb-8">
-                  We couldn't find any products in this category at the moment. 
+                  We couldn&apos;t find any products in this category at the moment. 
                   Please check back later or explore other categories.
                 </p>
                 <Link
