@@ -27,7 +27,10 @@ export default function ProductDetail({ product, variant }: { product: Product, 
 
   // Benzersiz size ve renkleri başlangıçta hesapla
   const uniqueSizes = [...new Set(product.variants?.map(v => v.size))]
-  const uniqueColors = [...new Set(product.variants?.map(v => v.color))]
+  const uniqueColors = useMemo(() => 
+    [...new Set(product.variants?.map(v => v.color))],
+    [product.variants]
+  )
 
   const [selectedSize, setSelectedSize] = useState<string>(() => {
     return uniqueSizes.length === 1 ? uniqueSizes[0] : ''

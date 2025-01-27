@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { FaWhatsapp, FaShoppingCart } from 'react-icons/fa'
 import content from '../../public/content.json'
 import CartSlider from './cart/CartSlider'
+import Image from 'next/image'
 
 export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -30,10 +31,11 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
-              <img 
+              <Image 
                 src="/logo4.png" 
                 alt="Wangamoort Logo" 
-                className="h-16 w-auto"
+                width={150}
+                height={50}
               />
             </Link>
           </div>
@@ -42,10 +44,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             {/* Ana Menü Linkleri */}
             <Link href="/">
-              <img 
+              <Image 
                 src="/logo-ndis.png" 
                 alt="NDIS Logo" 
-                className="h-14 w-auto"
+                width={150}
+                height={50}
               />
             </Link>
             <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors
