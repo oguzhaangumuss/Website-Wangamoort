@@ -33,11 +33,11 @@ async function getProduct(slug: string) {
   return product
 }
 
-type Props = {
+interface PageProps {
   params: { slug: string }
 }
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+export default async function ProductPage({ params }: PageProps) {
   const product = await getProduct(params.slug)
 
   if (!product) {
