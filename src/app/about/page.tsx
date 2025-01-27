@@ -9,7 +9,7 @@ export default function AboutPage() {
     },
     {
       title: "Wide Product Range",
-      content: "Our product range includes over 500 carefully selected items, from modern furniture and home appliances to commercial kitchen equipment and office essentials. Through trusted partnerships with leading manufacturers, we offer products that combine durability, style, and affordability. Every item we supply is chosen with precision to meet the highest standards, allowing us to cater to homes, offices, and businesses of all sizes.",
+      content: "Our product range includes a diverse selection of carefully chosen items, from modern furniture and home appliances to commercial kitchen equipment and office essentials",
       image: "/about/products3.jpeg"
     },
     {

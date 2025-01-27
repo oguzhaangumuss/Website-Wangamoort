@@ -10,6 +10,7 @@ import {
   FaWhatsapp,
   FaArrowUp
 } from 'react-icons/fa'
+import Link from 'next/link'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -19,48 +20,48 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-32">
-      {/* Üst Dalga Efekti */}
-      <div className="absolute -top-24 left-0 w-full overflow-hidden">
+    <footer className="relative mt-32 bg-gradient-to-br from-[#1f2937] via-[#274159] to-[#1f2937]">
+      {/* Wave SVG with gradient */}
+      <div className="absolute -top-16 left-0 w-full overflow-hidden">
         <svg
-          viewBox="0 0 1440 200"
-          className="relative block w-full h-24"
+          viewBox="0 0 1440 54"
+          className="w-full h-16"
           preserveAspectRatio="none"
         >
           <defs>
-            <linearGradient id="waveGradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" />  {/* Sayfa arka plan rengi */}
-              <stop offset="50%" stopColor="#ffffff" />  {/* Sayfa arka plan rengi */}
-              <stop offset="100%" stopColor="#111827" /> {/* Footer arka plan rengi */}
+            <linearGradient id="waveGradient" x1="0" y1="0" x2="100%" y2="0">
+              <stop offset="0%" stopColor="#1f2937" />
+              <stop offset="50%" stopColor="#274159" />
+              <stop offset="100%" stopColor="#1f2937" />
             </linearGradient>
           </defs>
-          <path
+          <path 
             fill="url(#waveGradient)"
-            d="M0,32L60,42.7C120,53,240,75,360,80C480,85,600,75,720,64C840,53,960,43,1080,48C1200,53,1320,75,1380,85.3L1440,96L1440,200L1380,200C1320,200,1200,200,1080,200C960,200,840,200,720,200C600,200,480,200,360,200C240,200,120,200,60,200L0,200Z"
-          ></path>
+            d="M0,32L48,26.7C96,21,192,11,288,16C384,21,480,43,576,48C672,53,768,43,864,37.3C960,32,1056,32,1152,37.3C1248,43,1344,53,1392,58.7L1440,64L1440,54L1392,54C1344,54,1248,54,1152,54C1056,54,960,54,864,54C768,54,672,54,576,54C480,54,384,54,288,54C192,54,96,54,48,54L0,54Z" 
+          />
         </svg>
       </div>
 
       {/* Scroll to Top Button */}
       <button 
         onClick={scrollToTop}
-        className="absolute -top-4 right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg
-          hover:bg-blue-700 transition-all duration-300 group"
+        className="absolute -top-4 right-8 bg-[#ffd230] text-[#152e1b] p-3 rounded-full shadow-lg
+          hover:bg-white transition-all duration-300 group z-10"
       >
         <FaArrowUp className="text-base group-hover:-translate-y-1 transition-transform duration-300" />
       </button>
 
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 pt-8 pb-8">
+      <div className="container mx-auto px-4 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Information */}
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
-              <img src="/logo.png" alt="Wangamoort Logo" className="h-6 w-auto" />
-              <h3 className="text-white text-lg font-bold tracking-wide">Wangamoort</h3>
+              {/*<img src="/logo4.png" alt="Wangamoort Logo" className="h-10 w-auto" />*/}
+              <h3 className="text-[#ffd230] text-lg font-bold tracking-wide">Wangamoort</h3>
             </div>
             <p className="text-gray-400 leading-relaxed text-sm">
-              Providing quality and modern furniture solutions for over 20 years.
+            From compact homes to large-scale projects, enjoy seamless delivery, expert installation, and exceptional customer service.
             </p>
             <div className="flex space-x-4">
               {[FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn].map((Icon, index) => (
@@ -81,27 +82,43 @@ export default function Footer() {
               Quick Links
             </h3>
             <ul className="space-y-2 text-sm">
-              {['About Us', 'Our Products', 'Our Services', 'Blog', 'Contact'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors hover:translate-x-2 inline-block">
-                    → {item}
-                  </a>
+              {[
+                { name: 'About Us', href: '/about' },
+                { name: 'Our Products', href: '/products' },
+                { name: 'Our Services', href: '/services' },
+                { name: 'Contact', href: '/contact' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link 
+                    href={item.href}
+                    className="text-gray-300 hover:text-white transition-colors hover:translate-x-2 inline-block"
+                  >
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Product Categories */}
+          {/* Services Categories */}
           <div>
             <h3 className="text-white text-base font-bold mb-4 pb-2 tracking-wider uppercase border-b-2 border-blue-500/30">
-              Categories
+              Services
             </h3>
             <ul className="space-y-2 text-sm">
-              {['Bedroom', 'Living Room', 'Dining Room', 'All Products'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors hover:translate-x-2 inline-block">
-                    → {item}
-                  </a>
+              {[
+                { name: 'Delivery Service', href: '/services/delivery-service' },
+                { name: 'Professional Installation Service', href: '/services/professional-installation-service' },
+                { name: 'Rubbish Removal Service', href: '/services/rubbish-removal-service' },
+                { name: 'Expert Guidance & Customization', href: '/services/expert-guidance-customization' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link 
+                    href={item.href}
+                    className="text-gray-400 hover:text-white transition-colors hover:translate-x-2 inline-block"
+                  >
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -139,13 +156,10 @@ export default function Footer() {
 
       {/* Bottom Footer */}
       <div className="border-t border-gray-800/50">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 ">
           <div className="flex flex-col md:flex-row justify-between items-center text-xs">
             <p className="text-gray-400">&copy; {currentYear} Wangamoort. All rights reserved. | Website Designed by <a href="https://www.linkedin.com/in/oguzhaangumuss/" target="_blank" className="text-blue-500 hover:text-blue-600 transition-colors">Oğuzhan Gümüş</a></p>
             <div className="flex space-x-4 mt-2 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-              <span className="text-gray-600">|</span>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Use</a>
             </div>
           </div>
         </div>

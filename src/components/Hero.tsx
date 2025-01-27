@@ -1,8 +1,16 @@
 'use client'
 import Image from 'next/image'
 import { FaPhoneAlt } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
 
 export default function Hero() {
+  const router = useRouter()
+
+  const scrollToHowToOrder = () => {
+    const element = document.getElementById('how-to-order')
+    element?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <section className="relative h-screen flex items-end pb-28">
       {/* Background Image */}
@@ -20,28 +28,33 @@ export default function Hero() {
 
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-2xl text-white">
-          <h1 className="text-6xl font-bold mb-8">
-            Your Trusted Furniture Supplier
+        <div className="max-w-3xl text-white">
+          <h1 className="text-5xl font-bold mb-8">
+          Your Trusted Partner for Home Design and Appliance Solutions
           </h1>
           <p className="text-2xl mb-10 text-gray-200">
-            The right address for quality and modern furniture solutions
+          Delivering Quality, Speed, and Reliability—Tailored for Every Need.
           </p>
           
           {/* Call to Action Buttons */}
-          <div className="flex flex-wrap gap-4">
-            <button className="bg-[#ffd230] hover:bg-white text-[#152e1b] px-8 py-4 
-              rounded-lg transition-all duration-300 flex items-center font-semibold
-              shadow-lg hover:shadow-xl hover:-translate-y-1.5 group">
-              <span className="group-hover:text-[#152e1b]">Request a Quote</span>
+          <div className="flex flex-wrap gap-4 group/buttons">
+            <button 
+              onClick={scrollToHowToOrder}
+              className="bg-[#ffd230] text-[#152e1b] px-8 py-4 
+                rounded-lg transition-all duration-300 flex items-center font-semibold
+                shadow-lg hover:shadow-xl hover:-translate-y-1.5
+                group-hover/buttons:bg-white hover:!bg-white">
+              <span>Request a Quote</span>
             </button>
-            <button className="bg-[#F9F9F9] hover:bg-[#ffd230] text-[#152e1b] px-8 py-4 
+            <button className="bg-white text-[#152e1b] px-8 py-4 
               rounded-lg transition-all duration-300 flex items-center gap-2 font-semibold
-              shadow-lg hover:shadow-xl hover:-translate-y-1.5 group">
-              <div className="bg-[#ffd230] group-hover:bg-white p-2 rounded-full transition-colors duration-300">
+              shadow-lg hover:shadow-xl hover:-translate-y-1.5
+              group-hover/buttons:bg-[#ffd230] hover:!bg-[#ffd230]">
+              <div className="bg-[#ffd230] p-2 rounded-full transition-colors duration-300
+                group-hover/buttons:bg-white hover:!bg-white">
                 <FaPhoneAlt className="text-[#152e1b]" />
               </div>
-              <span className="group-hover:text-[#152e1b]">+61 493 324 731</span>
+              <span>+61 493 324 731</span>
             </button>
           </div>
         </div>

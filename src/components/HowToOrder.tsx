@@ -59,26 +59,26 @@ export default function HowToOrder() {
                   transform hover:-translate-y-1.5 relative group"
               >
                 {/* Step Number & Icon Container */}
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center gap-3 mb-4 p-3">
                   {/* Step Number */}
-                  <div className="w-10 h-10 bg-[#ffd230] rounded-full flex items-center justify-center
+                  <div className="w-8 h-8 bg-[#ffd230] rounded-full flex items-center justify-center
                     text-[#152e1b] font-bold text-lg group-hover:scale-110 transition-transform
                     duration-500 shadow-md">
                     {step.number}
                   </div>
                   
                   {/* Icon */}
-                  <div className="text-[#152e1b] opacity-80 text-xl group-hover:scale-110 
+                  <div className="text-[#152e1b] opacity-80 text-4xl text-center group-hover:scale-110 
                     transition-transform duration-500">
                     <Icon />
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-[#152e1b] mb-2 tracking-tight">
+                <h3 className="text-xl font-bold text-[#152e1b] mb-2 tracking-tight text-center">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-base">
+                <p className="text-gray-600 leading-relaxed text-base text-center">
                   {step.description}
                 </p>
 

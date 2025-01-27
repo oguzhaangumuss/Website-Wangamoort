@@ -3,8 +3,42 @@ import AboutUs from '@/components/AboutUs'
 import Services from '@/components/Services'
 import HowToOrder from '@/components/HowToOrder'
 import Products from '@/components/Products'
+import WhyChooseUs from '@/components/WhyChooseUs'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { Database } from '@/types/database.types'
 
-export default function Home() {
+async function getCategories() {
+  const supabase = createServerComponentClient<Database>({ cookies })
+  
+  const { data: categories } = await supabase
+    .from('categories')
+    .select('*')
+    .order('name')
+
+  return categories || []
+}
+
+async function getSubcategories() {
+  const supabase = createServerComponentClient<Database>({ cookies })
+  
+  const { data: subcategories } = await supabase
+    .from('subcategories')
+    .select(`
+      *,
+      category:categories (*)
+    `)
+    .order('name')
+
+  return subcategories || []
+}
+
+export default async function HomePage() {
+  const [categories, subcategories] = await Promise.all([
+    getCategories(),
+    getSubcategories()
+  ])
+
   return (
     <div>
       {/* Hero Section */}
@@ -17,12 +51,13 @@ export default function Home() {
       <HowToOrder />
 
       {/* Products Section */}
-      <Products />
+      <Products categories={categories} subcategories={subcategories} />
 
       {/* About Us Section */}
       <AboutUs />
 
       {/* Why Choose Us Section */}
+      <WhyChooseUs />
     </div>
   )
 } 
