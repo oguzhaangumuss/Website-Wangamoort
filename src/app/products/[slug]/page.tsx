@@ -33,11 +33,14 @@ async function getProduct(slug: string) {
   return product
 }
 
-interface PageProps {
-  params: { slug: string }
-}
+// Next.js App Router için özel tip tanımlaması
+type PageParams = { slug: string }
 
-export default async function ProductPage({ params }: PageProps) {
+export default async function ProductPage({
+  params,
+}: {
+  params: PageParams
+}) {
   const product = await getProduct(params.slug)
 
   if (!product) {
