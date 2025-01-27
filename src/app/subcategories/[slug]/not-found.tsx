@@ -8,7 +8,7 @@ export default function NotFound() {
           Category Not Found
         </h2>
         <p className="text-gray-600 mb-6">
-          The category you&apos;re looking for doesn't exist or has been moved.
+          The category you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
         <Link
           href="/products"

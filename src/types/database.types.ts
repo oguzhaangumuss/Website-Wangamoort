@@ -197,7 +197,7 @@ export interface ApiResponse<T> {
   error?: string
 }
 
-export interface ProductsResponse extends ApiResponse<Product[]> {}
-export interface ProductVariantsResponse extends ApiResponse<ProductVariant[]> {}
-export interface ProductImagesResponse extends ApiResponse<ProductImage[]> {}
-export interface QuoteResponse extends ApiResponse<Quote> {}
+export type ProductsResponse = ApiResponse<Product[]>
+export type ProductVariantsResponse = ApiResponse<ProductVariant[]>
+export type ProductImagesResponse = ApiResponse<ProductImage[]>
+export type QuoteResponse = ApiResponse<Quote>
