@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import ProductDetail from './ProductDetail'
 import type { Database } from '@/types/database.types'
+import { Metadata } from 'next'
 
 export const revalidate = 3600
 
@@ -40,7 +41,7 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default async function ProductPage({ params }: Props) {
+export default async function ProductPage({ params, searchParams }: Props) {
   const product = await getProduct(params.slug)
 
   if (!product) {
