@@ -4,6 +4,7 @@ import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import type { CartItem } from '@/types/database.types'
+import Image from 'next/image'
 
 interface CartSliderProps {
   isOpen: boolean
@@ -93,10 +94,12 @@ export default function CartSlider({ isOpen, onClose }: CartSliderProps) {
                               {cartItems.map((item) => (
                                 <li key={item.variant_id} className="flex py-6">
                                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                    <img
+                                    <Image
                                       src={item.image}
                                       alt={item.name}
-                                      className="h-full w-full object-cover object-center"
+                                      width={80}
+                                      height={80}
+                                      className="object-cover rounded-md"
                                     />
                                   </div>
 

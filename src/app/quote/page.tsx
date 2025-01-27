@@ -8,6 +8,7 @@ import { useCart } from '@/contexts/CartContext'
 import type { QuoteFormData } from '@/types/database.types'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 const additionalServices = [
   {
@@ -186,9 +187,11 @@ export default function QuotePage() {
                       <tr key={index} className="bg-white">
                         <td className="px-4 py-4">
                           <div className="flex items-center">
-                            <img 
-                              src={item.image} 
-                              alt={item.name} 
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              width={50}
+                              height={50}
                               className="w-16 h-16 object-cover rounded"
                             />
                             <div className="ml-4">
@@ -241,9 +244,11 @@ export default function QuotePage() {
                           : 'border-gray-200 hover:border-gray-300'}`}
                     >
                       <div className="aspect-w-16 aspect-h-9">
-                        <img
+                        <Image
                           src={service.image}
                           alt={service.name}
+                          width={500}
+                          height={300}
                           className="object-cover w-full h-full"
                         />
                       </div>
@@ -439,7 +444,13 @@ export default function QuotePage() {
               <div className="divide-y divide-gray-200">
                 {cart.map((item) => (
                   <div key={`${item.variant_id}-${item.size}-${item.color}`} className="py-4 flex items-center">
-                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={50}
+                      height={50}
+                      className="w-16 h-16 object-cover rounded"
+                    />
                     <div className="ml-4 flex-1">
                       <h4 className="font-medium">{item.name}</h4>
                       <p className="text-sm text-gray-600">

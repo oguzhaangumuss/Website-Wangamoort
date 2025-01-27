@@ -120,12 +120,13 @@ export default function ProductList({
                     transition-shadow duration-300"
                 >
                   {/* Subcategory Image */}
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="aspect-square relative overflow-hidden rounded-lg">
                     <Image
-                      src={subcategory.image || '/images/placeholder.jpg'} // Placeholder image ekleyin
+                      src={subcategory.image || '/placeholder.jpg'}
                       alt={subcategory.name}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
 
