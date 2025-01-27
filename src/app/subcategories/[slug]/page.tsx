@@ -134,10 +134,12 @@ export default async function SubcategoryPage({
           <div className="relative h-full">
             <div className="absolute inset-0 bg-black/50 z-10" />
             <div className="relative h-full">
-              <img
+              <Image
                 src="/images/about-us/quality/qualityYellow4.jpg"
                 alt="Products Hero Background"
                 className="w-full h-full object-cover"
+                width={1920}
+                height={1080}
               />
             </div>
           </div>
@@ -171,7 +173,7 @@ export default async function SubcategoryPage({
                 ?.images?.find(img => img.is_default)?.url
 
               const firstImage = product.variants
-                ?.find((v: any) => v.images?.length > 0)
+                ?.find((v: ProductVariant & { images?: ProductImage[] }) => (v.images ?? []).length > 0)
                 ?.images?.[0]?.url
 
               const productImage = defaultImage || firstImage || '/images/placeholder.jpg'

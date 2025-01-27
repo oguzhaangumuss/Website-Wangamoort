@@ -50,7 +50,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
     } else if (uniqueColors?.length > 0 && !uniqueColors.includes(selectedColor)) {
       setSelectedColor(uniqueColors[0])
     }
-  }, [uniqueColors, selectedSize])
+  }, [uniqueColors, selectedSize, selectedColor])
 
   // selectedVariant değiştiğinde ana resmi güncelle
   useEffect(() => {

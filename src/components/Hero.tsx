@@ -1,11 +1,8 @@
 'use client'
 import Image from 'next/image'
 import { FaPhoneAlt } from 'react-icons/fa'
-import { useRouter } from 'next/navigation'
 
 export default function Hero() {
-  const router = useRouter()
-
   const scrollToHowToOrder = () => {
     const element = document.getElementById('how-to-order')
     element?.scrollIntoView({ behavior: 'smooth' })

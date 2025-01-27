@@ -59,7 +59,7 @@ export async function fetchOrderTrends(supabase: SupabaseClient<Database>, days:
     if (trendIndex !== -1) {
       trends[trendIndex].orders++
       trends[trendIndex].revenue += order.basket.reduce(
-        (sum: number, item: any) => sum + (item.price * item.quantity), 
+        (sum: number, item: Record<string, any>) => sum + (item.price * item.quantity), 
         0
       )
     }
@@ -73,7 +73,7 @@ export async function fetchTopProducts(supabase: SupabaseClient<Database>, limit
   if (!quotes) return []
 
   const productSales = quotes.reduce((acc: Record<string, TopProduct>, quote) => {
-    quote.basket.forEach((item: any) => {
+    quote.basket.forEach((item: Record<string, any>) => {
       if (!acc[item.product_id]) {
         acc[item.product_id] = {
           id: item.product_id,
@@ -100,7 +100,7 @@ export async function fetchCategorySales(supabase: SupabaseClient<Database>): Pr
   if (!quotes) return []
 
   const salesByCategory = quotes.reduce((acc: Record<string, CategorySales>, quote) => {
-    quote.basket.forEach((item: any) => {
+    quote.basket.forEach((item: Record<string, any>) => {
       const category = item.category || 'Uncategorized'
       if (!acc[category]) {
         acc[category] = { category, sales: 0, revenue: 0 }
@@ -127,8 +127,8 @@ export async function fetchRecentOrders(supabase: SupabaseClient<Database>) {
     id: quote.id,
     customer_name: `${quote.customer_first_name} ${quote.customer_last_name}`,
     status: quote.status,
-    total_amount: quote.basket.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0),
+    total_amount: quote.basket.reduce((sum: number, item: Record<string, any>) => sum + (item.price * item.quantity), 0),
     created_at: quote.created_at,
-    items_count: quote.basket.reduce((sum: number, item: any) => sum + item.quantity, 0)
+    items_count: quote.basket.reduce((sum: number, item: Record<string, any>) => sum + item.quantity, 0)
   }))
 } 

@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         
         <h3>Products:</h3>
         <ul>
-          ${products.map((p: any) => `
+          ${products.map((p: Record<string, any>) => `
             <li>${p.name} - Quantity: ${p.quantity}</li>
           `).join('')}
         </ul>
