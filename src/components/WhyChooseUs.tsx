@@ -42,7 +42,7 @@ export default function WhyChooseUs() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
           <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto">
-            We pride ourselves on delivering a seamless and customer-focused experience. Here's why We&apos;re the right choice for your furniture and appliance needs.
+            We&apos;re dedicated to excellence. Here's why We&apos;re the right choice for your furniture and appliance needs.
           </p>
         </div>
 
