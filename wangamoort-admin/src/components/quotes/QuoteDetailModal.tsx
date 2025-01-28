@@ -1,5 +1,5 @@
 import { Dialog } from '@headlessui/react'
-import { Quote } from '@/types'
+import { Quote } from '../../types/database.types'
 
 type QuoteDetailModalProps = {
   quote: Quote

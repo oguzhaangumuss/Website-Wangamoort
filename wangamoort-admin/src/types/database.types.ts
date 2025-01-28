@@ -285,3 +285,46 @@ export interface Database {
     }
   }
 }
+
+export type Category = Database['public']['Tables']['categories']['Row']
+export type Subcategory = Database['public']['Tables']['subcategories']['Row'] & {
+  category?: Category
+}
+
+export type Product = Database['public']['Tables']['products']['Row'] & {
+  subcategory?: Subcategory
+  variants?: ProductVariant[]
+}
+
+export type ProductVariant = Database['public']['Tables']['product_variants']['Row']
+export type ProductImage = Database['public']['Tables']['product_images']['Row']
+
+export type QuoteBasketItem = {
+  product_id: string
+  quantity: number
+  selected_size?: string
+  selected_color?: string
+  price: number
+  product_name?: string
+}
+
+export type Quote = Omit<
+  Database['public']['Tables']['quotes']['Row'], 
+  'company_name' | 'basket' | 'delivery_address' | 'notes'
+> & {
+  basket: QuoteBasketItem[]
+  company_name?: string
+  delivery_address?: {
+    street: string
+    city: string
+    state: string
+    postcode: string
+  }
+  notes?: string
+}
+
+export interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+}

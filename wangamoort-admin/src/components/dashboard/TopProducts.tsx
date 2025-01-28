@@ -1,7 +1,7 @@
 'use client'
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { formatCurrency } from '@/utils/formatters'
+import { formatCurrency } from '../../utils/formatters'
 
 type TopProductsProps = {
   products: Array<{

@@ -1,4 +1,4 @@
-import ProductTable from '@/components/products/ProductTable'
+import ProductTable from '../../components/products/ProductTable'
 import { PlusIcon, CubeIcon, FolderIcon, FolderOpenIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'

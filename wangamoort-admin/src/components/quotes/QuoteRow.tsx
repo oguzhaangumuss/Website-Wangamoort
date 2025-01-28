@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Quote } from '@/types'
-import { QuoteStatus } from '@/types/quoteStatus'
+import { Quote } from '../../types/database.types'
+import { QuoteStatus } from '../../types/quoteStatus'
   
 type QuoteRowProps = {
   quote: Quote

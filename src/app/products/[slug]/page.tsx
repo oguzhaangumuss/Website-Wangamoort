@@ -33,15 +33,14 @@ async function getProduct(slug: string) {
   return product
 }
 
-// Next.js App Router için özel tip tanımlaması
-type PageParams = { slug: string }
+// Next.js 15 için güncellenmiş tip tanımlaması
+type PageProps = {
+  params: Promise<{ slug: string }>
+}
 
-export default async function ProductPage({
-  params,
-}: {
-  params: PageParams
-}) {
-  const product = await getProduct(params.slug)
+export default async function ProductPage({ params }: PageProps) {
+  const { slug } = await params
+  const product = await getProduct(slug)
 
   if (!product) {
     notFound()

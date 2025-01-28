@@ -1,7 +1,7 @@
 'use client'
 
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { formatCurrency } from '@/utils/formatters'
+import { formatCurrency } from '../../utils/formatters'
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
 

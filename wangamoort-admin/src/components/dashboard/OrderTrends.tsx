@@ -2,7 +2,7 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { format } from 'date-fns'
-import { formatCurrency } from '@/utils/formatters'
+import { formatCurrency } from '../../utils/formatters'
 
 type OrderTrendsProps = {
   trends: Array<{

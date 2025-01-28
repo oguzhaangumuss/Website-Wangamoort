@@ -34,8 +34,8 @@ export default function Navbar() {
               <Image 
                 src="/logo4.png" 
                 alt="Wangamoort Logo" 
-                width={150}
-                height={50}
+                width={130}
+                height={25}
               />
             </Link>
           </div>
@@ -47,8 +47,8 @@ export default function Navbar() {
               <Image 
                 src="/logo-ndis.png" 
                 alt="NDIS Logo" 
-                width={150}
-                height={50}
+                width={80}
+                height={15}
               />
             </Link>
             <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors

@@ -43,10 +43,11 @@ export default function ProductList({
           <div className="relative h-full">
             <div className="absolute inset-0 bg-black/50 z-10" />
             <div className="relative h-full">
-              <img
+              <Image
                 src="/images/about-us/quality/qualityYellow4.jpg"
                 alt="Products Hero Background"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </div>
           </div>

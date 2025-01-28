@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { PencilIcon, TrashIcon, ChevronDownIcon, ChevronUpIcon, ExclamationTriangleIcon, FunnelIcon } from '@heroicons/react/24/outline'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast, Toaster } from 'sonner'
-import type { Product, ProductVariant, ProductImage, Subcategory } from '@/types'
+import type { Product, ProductVariant, ProductImage, Subcategory } from '@/types/database.types'
 import { Database } from '@/types/database.types'
 
 interface ExtendedProduct extends Product {

@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'sonner'
-import { Database } from '@/types/database.types'
-import { Quote } from '@/types'
-import { QuoteStatus } from '@/types/quoteStatus'
+import { Database } from '../types/database.types'
+import { Quote } from '../types/database.types'
+import { QuoteStatus } from '../types/quoteStatus'
 
 const ITEMS_PER_PAGE = 10
 

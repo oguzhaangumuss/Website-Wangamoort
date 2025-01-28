@@ -1,15 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useQuotes } from '@/hooks/useQuotes'
-import { QuoteStatus } from '@/types/quoteStatus'
-import { DatePicker } from '@/components/quotes/DatePicker'
-import { StatCard } from '@/components/quotes/StatCard'
-import { Pagination } from '@/components/quotes/Pagination'
-import { QuoteRow } from '@/components/quotes/QuoteRow'
-import { QuoteDetailModal } from '@/components/quotes/QuoteDetailModal'
-import { Quote } from '@/types'
-import { useDebounce } from '@/hooks/useDebounce'
+import { useQuotes } from '../../hooks/useQuotes'
+import { QuoteStatus } from '../../types/quoteStatus'
+import { DatePicker } from '../../components/quotes/DatePicker'
+import { StatCard } from '../../components/quotes/StatCard'
+import { Pagination } from '../../components/quotes/Pagination'
+import { QuoteRow } from '../../components/quotes/QuoteRow'
+import { QuoteDetailModal } from '../../components/quotes/QuoteDetailModal'
+import { Quote } from '@/types/database.types'
+import { useDebounce } from '../../hooks/useDebounce'
 
 export default function QuotesPage() {
   const { quotes, loading, totalCount, fetchQuotes, updateQuoteStatus } = useQuotes()

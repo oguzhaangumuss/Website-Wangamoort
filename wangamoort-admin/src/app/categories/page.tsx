@@ -5,9 +5,10 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast, Toaster } from 'sonner'
 import { PencilIcon, TrashIcon, PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import type { Database } from '@/types/database.types'
-import type { Category } from '@/types'
+import type { Category } from '@/types/database.types'
 import Image from 'next/image'
-import ImageUpload from '@/components/categories/ImageUpload'
+import ImageUpload from '../../components/categories/ImageUpload'
+
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
@@ -150,6 +151,19 @@ export default function CategoriesPage() {
 
   const handleDelete = async (id: string) => {
     try {
+      // Önce bu kategoriye bağlı subcategory'leri kontrol et
+      const { data: subcategories } = await supabase
+        .from('subcategories')
+        .select('id')
+        .eq('category_id', id)
+
+      if (subcategories && subcategories.length > 0) {
+        toast.error('Cannot delete category', {
+          description: 'This category has subcategories. Please delete them first.',
+        })
+        return
+      }
+
       const { error } = await supabase
         .from('categories')
         .delete()

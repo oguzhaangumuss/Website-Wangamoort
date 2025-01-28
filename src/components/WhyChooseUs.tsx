@@ -25,7 +25,7 @@ const features = [
   },
   {
     title: 'Expert Support',
-    description: 'From product selection to space customization, we provide tailored advice and solutions to suit your needs, whether you&apos;re an individual or a business.',
+    description: 'From product selection to space customization, we provide tailored advice and solutions to suit your needs, whether you are an individual or a business.',
     icon: FaHeadset
   },
   {
@@ -42,7 +42,7 @@ export default function WhyChooseUs() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
           <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto">
-            We&apos;re dedicated to excellence. Here&apos;s why we&apos;re the right choice for your furniture and appliance needs.
+            We are dedicated to excellence. Here is why we are the right choice for your furniture and appliance needs.
           </p>
         </div>
 

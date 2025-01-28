@@ -1,7 +1,7 @@
-import { Quote } from '@/types'
-import { QuoteStatus } from '@/types/quoteStatus'
+import { Quote } from '@/types/database.types'
+import { QuoteStatus } from '../types/quoteStatus'
 import { useState } from 'react'
-import { QuoteDetailModal } from '@/components/quotes/QuoteDetailModal'
+import { QuoteDetailModal } from '../components/quotes/QuoteDetailModal'
 
 type QuoteRowProps = {
   quote: Quote

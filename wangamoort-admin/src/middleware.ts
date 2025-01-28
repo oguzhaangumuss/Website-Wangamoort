@@ -1,10 +1,16 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import type { Database } from '@/types/database.types'
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+  
+  // createMiddlewareClient'ı doğrudan req ve res ile kullan
+  const supabase = createMiddlewareClient<Database>({ 
+    req: req as any, 
+    res: res as any 
+  })
 
   // Oturum durumunu kontrol et
   const {

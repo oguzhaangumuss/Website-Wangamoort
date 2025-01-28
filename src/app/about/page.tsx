@@ -4,7 +4,7 @@ export default function AboutPage() {
   const sections = [
     {
       title: "Quality and Trust",
-      content: "We are a dedicated provider of high-quality furniture, appliances, and household essentials, proudly serving Sydney and its surrounding areas. Whether you&apos;re a business managing large-scale projects or an individual upgrading your home, we deliver tailored solutions designed to meet your unique needs. Our commitment to quality, speed, and exceptional customer service sets us apart, ensuring every client enjoys a seamless and satisfying experience.",
+      content: "We are a dedicated provider of high-quality furniture, appliances, and household essentials, proudly serving Sydney and its surrounding areas. Whether you are a business managing large-scale projects or an individual upgrading your home, we deliver tailored solutions designed to meet your unique needs. Our commitment to quality, speed, and exceptional customer service sets us apart, ensuring every client enjoys a seamless and satisfying experience.",
       image: "/about/quality.jpeg"
     },
     {

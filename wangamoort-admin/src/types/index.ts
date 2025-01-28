@@ -1,7 +1,9 @@
 import type { Database } from './database.types'
-
-export type Category = Database['public']['Tables']['categories']['Row']
-export type Subcategory = Database['public']['Tables']['subcategories']['Row']
+/*
+//export type Category = Database['public']['Tables']['categories']['Row']
+//export type Subcategory = Database['public']['Tables']['subcategories']['Row'] & {
+//  category?: Category
+//}
 
 export type Product = Database['public']['Tables']['products']['Row'] & {
   subcategory?: Subcategory
@@ -29,3 +31,4 @@ export interface ApiResponse<T> {
   data?: T
   error?: string
 }
+*/

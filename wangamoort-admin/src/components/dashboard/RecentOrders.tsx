@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDistance } from 'date-fns'
-import { formatCurrency } from '@/utils/formatters'
+import { formatCurrency } from '../../utils/formatters'
 
 type RecentOrder = {
   id: string

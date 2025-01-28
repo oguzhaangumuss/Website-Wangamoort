@@ -7,8 +7,15 @@ function findServiceBySlug(slug: string) {
   return content.services.find(service => service.slug === slug)
 }
 
-export default function ServicePage({ params }: { params: { slug: string } }) {
-  const service = findServiceBySlug(params.slug)
+export const revalidate = 3600
+
+type PageProps = {
+  params: Promise<{ slug: string }>
+}
+
+export default async function ServicePage({ params }: PageProps) {
+  const { slug } = await params
+  const service = findServiceBySlug(slug)
 
   if (!service) {
     notFound()

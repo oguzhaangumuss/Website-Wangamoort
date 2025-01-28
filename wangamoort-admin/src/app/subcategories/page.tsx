@@ -5,9 +5,9 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast, Toaster } from 'sonner'
 import { PlusIcon, ExclamationTriangleIcon, XMarkIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import type { Database } from '@/types/database.types'
-import type { Category, Subcategory } from '@/types'
+import type { Category, Subcategory } from '@/types/database.types'
 import { v4 as uuidv4 } from 'uuid'
-import ImageUpload from '@/components/subcategories/ImageUpload'
+import ImageUpload from '../../components/subcategories/ImageUpload'
 
 export default function SubcategoriesPage() {
   const [subcategories, setSubcategories] = useState<Array<Subcategory & { category: Category }>>([])
