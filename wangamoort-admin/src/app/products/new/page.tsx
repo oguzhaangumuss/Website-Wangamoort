@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { Subcategory, Category } from '@/types/database.types'
 import VariantForm, { VariantFormData } from '../../../components/products/VariantForm'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 

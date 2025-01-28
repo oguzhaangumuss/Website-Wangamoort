@@ -6,7 +6,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { PencilIcon, PlusIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
 import type { Category, Subcategory, Product, ProductVariant, ProductImage } from '@/types/database.types'
 import VariantForm, { VariantFormData } from '../../../components/products/VariantForm'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import Link from 'next/link'
 
 interface EditProductPageProps {
