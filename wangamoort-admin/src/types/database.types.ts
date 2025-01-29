@@ -291,6 +291,13 @@ export type Subcategory = Database['public']['Tables']['subcategories']['Row'] &
   category?: Category
 }
 
+export type ExtendedProduct = Database['public']['Tables']['products']['Row'] & {
+  subcategory?: Subcategory
+  variants?: ProductVariant[]
+  stock_status: string
+  updated_at: string
+}
+
 export type Product = Database['public']['Tables']['products']['Row'] & {
   subcategory?: Subcategory
   variants?: ProductVariant[]
