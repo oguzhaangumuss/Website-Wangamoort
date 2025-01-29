@@ -61,7 +61,8 @@ export default function ProductsPage() {
         const extendedProducts: ExtendedProduct[] = productsData.map(product => ({
           ...product,
           stock_status: product.variants?.[0]?.stock_status || 'out_of_stock',
-          updated_at: new Date().toISOString() // Şu anki tarih
+          updated_at: new Date().toISOString(),
+          description: product.description || '' // null ise boş string'e dönüştür
         }))
 
         setProducts(extendedProducts)

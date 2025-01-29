@@ -296,6 +296,7 @@ export type ExtendedProduct = Database['public']['Tables']['products']['Row'] & 
   variants?: ProductVariant[]
   stock_status: string
   updated_at: string
+  description: string | null
 }
 
 export type Product = Database['public']['Tables']['products']['Row'] & {
