@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { Database } from '../types/database.types'
 import { Quote } from '../types/database.types'
 import { QuoteStatus } from '../types/quoteStatus'
+import * as XLSX from 'xlsx'
 
 type FetchQuotesOptions = {
   page: number
@@ -105,8 +106,6 @@ export function useQuotes() {
 
   const exportToExcel = async (quotes: Quote[]) => {
     try {
-      const XLSX = await import('xlsx').then(mod => mod.default)
-      
       const data = quotes.map(quote => ({
         'Date': new Date(quote.created_at).toLocaleDateString(),
         'Customer': `${quote.customer_first_name} ${quote.customer_last_name}`,
@@ -117,13 +116,13 @@ export function useQuotes() {
         'Products': quote.basket.map(item => item.product_name).join(', ')
       }))
 
-      const ws = XLSX.utils.json_to_sheet(data)
-      const wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, ws, 'Quotes')
-      XLSX.writeFile(wb, `quotes-${new Date().toISOString().split('T')[0]}.xlsx`)
+      const worksheet = XLSX.utils.json_to_sheet(data)
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Quotes')
+      XLSX.writeFile(workbook, 'quotes.xlsx')
     } catch (error) {
       console.error('Error exporting to Excel:', error)
-      toast.error('Error exporting to Excel')
+      toast.error('Failed to export quotes')
     }
   }
 
