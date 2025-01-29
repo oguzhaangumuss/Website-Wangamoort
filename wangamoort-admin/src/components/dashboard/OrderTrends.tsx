@@ -38,9 +38,10 @@ export function OrderTrends({ trends, dateRange, onDateRangeChange }: OrderTrend
           <YAxis yAxisId="left" />
           <YAxis yAxisId="right" orientation="right" />
           <Tooltip 
-            formatter={(value: number, name: string) => {
-              if (name === 'revenue') return formatCurrency(value)
-              return value
+            formatter={(value: string | number | Array<string | number>) => {
+              const numValue = Number(value)
+              if (isNaN(numValue)) return value
+              return formatCurrency(numValue)
             }}
           />
           <Legend />
