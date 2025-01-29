@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { XMarkIcon, StarIcon as StarOutline, StarIcon as StarSolid } from '@heroicons/react/24/outline'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
-import { toast } from 'react-hot-toast'
+import { toast } from 'sonner'
 
 // Export edilmiş interface
 export interface ProductImage {
