@@ -291,12 +291,12 @@ export type Subcategory = Database['public']['Tables']['subcategories']['Row'] &
   category?: Category
 }
 
-export type ExtendedProduct = Database['public']['Tables']['products']['Row'] & {
+export type ExtendedProduct = Omit<Database['public']['Tables']['products']['Row'], 'description'> & {
   subcategory?: Subcategory
   variants?: ProductVariant[]
   stock_status: string
   updated_at: string
-  description: string | null
+  description: string
 }
 
 export type Product = Database['public']['Tables']['products']['Row'] & {

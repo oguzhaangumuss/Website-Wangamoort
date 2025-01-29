@@ -57,13 +57,15 @@ export default function ProductsPage() {
       if (error) throw error
 
       if (productsData) {
-        // Veriyi ExtendedProduct formatına dönüştür
-        const extendedProducts: ExtendedProduct[] = productsData.map(product => ({
+        // Tip dönüşümünü açıkça belirtelim
+        const extendedProducts = productsData.map(product => ({
           ...product,
-          stock_status: product.variants?.[0]?.stock_status || 'out_of_stock',
-          updated_at: new Date().toISOString(),
-          description: product.description || '' // null ise boş string'e dönüştür
-        }))
+          stock_status: product.variants?.[0]?.stock_status ?? 'out_of_stock',
+          updated_at: product.created_at ?? new Date().toISOString(),
+          description: product.description ?? '',  // null değerleri boş string'e çevir
+          variants: product.variants ?? [],        // undefined yerine boş array
+          subcategory: product.subcategory ?? undefined
+        })) satisfies ExtendedProduct[]
 
         setProducts(extendedProducts)
         
