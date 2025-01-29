@@ -7,6 +7,9 @@ import ProductList from '@/app/products/ProductList'
 // Revalidate her saat
 export const revalidate = 3600
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 async function getSubcategoryWithProducts(slug: string) {
   const supabase = createServerComponentClient<Database>({ cookies })
   

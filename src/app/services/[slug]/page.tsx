@@ -9,6 +9,9 @@ function findServiceBySlug(slug: string) {
 
 export const revalidate = 3600
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 type PageProps = {
   params: Promise<{ slug: string }>
 }

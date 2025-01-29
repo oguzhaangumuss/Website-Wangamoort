@@ -9,6 +9,8 @@ import type { Category } from '@/types/database.types'
 import Image from 'next/image'
 import ImageUpload from '../../components/categories/ImageUpload'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])

@@ -22,6 +22,9 @@ const createSlug = (text: string): string => {
     .replace(/^-+|-+$/g, '')
 }
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 export default function EditProductPage({ params }: EditProductPageProps) {
   const { id } = use(params)
   const router = useRouter()

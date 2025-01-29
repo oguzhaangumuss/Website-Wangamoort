@@ -1,62 +1,111 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import ProductTable from '../../components/products/ProductTable'
 import { PlusIcon, CubeIcon, FolderIcon, FolderOpenIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 import { Database } from '@/types/database.types'
 
-async function getProductsData() {
-  const supabase = createServerComponentClient<Database>({ cookies })
-  
-  try {
-    // Paralel olarak tüm sayıları çekelim
-    const [
-      { count: totalProducts },
-      { count: totalCategories },
-      { count: totalSubcategories }
-    ] = await Promise.all([
-      supabase.from('products').select('*', { count: 'exact', head: true }),
-      supabase.from('categories').select('*', { count: 'exact', head: true }),
-      supabase.from('subcategories').select('*', { count: 'exact', head: true })
-    ])
-
-    return {
-      products: await supabase
-        .from('products')
-        .select(`
-          *,
-          subcategory: subcategories (
-            *,
-            category: categories (*)
-          ),
-          variants: product_variants (
-            *,
-            images: product_images (*)
-          )
-        `)
-        .order('created_at', { ascending: false }),
-      stats: {
-        totalProducts,
-        totalCategories,
-        totalSubcategories
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return {
-      products: { data: [] },
-      stats: {
-        totalProducts: 0,
-        totalCategories: 0,
-        totalSubcategories: 0
-      }
+// Product tipini tanımlayalım
+type Product = Database['public']['Tables']['products']['Row'] & {
+  subcategory?: {
+    id: string
+    name: string
+    slug: string
+    category_id: string
+    created_at: string
+    image?: string
+    category?: {
+      id: string
+      name: string
+      slug: string
+      created_at: string
+      image?: string
     }
   }
+  variants?: Array<{
+    id: string
+    product_id: string
+    variant_name: string | null
+    size: string
+    color: string
+    price: number
+    stock_status: string
+    created_at: string
+    images?: Array<{
+      id: string
+      variant_id: string
+      url: string
+      alt: string
+      created_at: string
+      is_default: boolean
+    }>
+  }>
 }
 
-export default async function ProductsPage() {
-  const { products, stats } = await getProductsData()
-  const productList = products.data || []
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalCategories: 0,
+    totalSubcategories: 0
+  })
+  const [loading, setLoading] = useState(true)
+  const supabase = createClientComponentClient<Database>()
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        // Paralel olarak tüm sayıları çekelim
+        const [
+          { count: totalProducts },
+          { count: totalCategories },
+          { count: totalSubcategories },
+          productsResponse
+        ] = await Promise.all([
+          supabase.from('products').select('*', { count: 'exact', head: true }),
+          supabase.from('categories').select('*', { count: 'exact', head: true }),
+          supabase.from('subcategories').select('*', { count: 'exact', head: true }),
+          supabase
+            .from('products')
+            .select(`
+              *,
+              subcategory: subcategories (
+                *,
+                category: categories (*)
+              ),
+              variants: product_variants (
+                *,
+                images: product_images (*)
+              )
+            `)
+            .order('created_at', { ascending: false })
+        ])
+
+        setStats({
+          totalProducts: totalProducts || 0,
+          totalCategories: totalCategories || 0,
+          totalSubcategories: totalSubcategories || 0
+        })
+
+        setProducts(productsResponse.data || [])
+      } catch (error) {
+        console.error('Error loading data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [supabase])
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   const statCards = [
     {
@@ -130,7 +179,7 @@ export default async function ProductsPage() {
       {/* Table Section */}
       <div className="mt-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-          <ProductTable initialProducts={productList} />
+          <ProductTable initialProducts={products} />
         </div>
       </div>
     </div>
