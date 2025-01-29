@@ -1,7 +1,59 @@
-import { SupabaseClient } from '@supabase/supabase-js'
+import { SupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/types/database.types'
-import { DashboardStats, OrderTrend, TopProduct, CategorySales } from './types'
+import { DashboardStats, OrderTrend, TopProduct, CategorySales, RecentOrder } from './types'
 import { subDays, format } from 'date-fns'
+
+// Tip tanımlamaları
+type GenericData = {
+  id: string;
+  [key: string]: unknown;
+}
+
+type ErrorResponse = {
+  message: string;
+  status: number;
+}
+
+interface ApiResponse<T> {
+  data: T | null;
+  error: ErrorResponse | null;
+}
+
+interface QueryParams {
+  [key: string]: string | number | boolean;
+}
+
+interface RequestOptions {
+  method: string;
+  headers?: { [key: string]: string };
+  body?: string;
+}
+
+interface ApiError {
+  message: string;
+  code?: string;
+  details?: unknown;
+}
+
+interface ApiSuccess<T> {
+  data: T;
+  metadata?: {
+    count?: number;
+    page?: number;
+    totalPages?: number;
+  };
+}
+
+type ApiResult<T> = ApiSuccess<T> | ApiError;
+
+// Basket item için interface ekleyelim
+interface BasketItem {
+  product_id: string;
+  product_name: string;
+  category?: string;
+  price: number;
+  quantity: number;
+}
 
 export async function fetchDashboardStats(supabase: SupabaseClient<Database>): Promise<DashboardStats> {
   const { data: quotes } = await supabase.from('quotes').select('status')
@@ -59,7 +111,7 @@ export async function fetchOrderTrends(supabase: SupabaseClient<Database>, days:
     if (trendIndex !== -1) {
       trends[trendIndex].orders++
       trends[trendIndex].revenue += order.basket.reduce(
-        (sum: number, item: Record<string, any>) => sum + (item.price * item.quantity), 
+        (sum: number, item: BasketItem) => sum + (item.price * item.quantity), 
         0
       )
     }
@@ -73,7 +125,7 @@ export async function fetchTopProducts(supabase: SupabaseClient<Database>, limit
   if (!quotes) return []
 
   const productSales = quotes.reduce((acc: Record<string, TopProduct>, quote) => {
-    quote.basket.forEach((item: Record<string, any>) => {
+    quote.basket.forEach((item: BasketItem) => {
       if (!acc[item.product_id]) {
         acc[item.product_id] = {
           id: item.product_id,
@@ -100,7 +152,7 @@ export async function fetchCategorySales(supabase: SupabaseClient<Database>): Pr
   if (!quotes) return []
 
   const salesByCategory = quotes.reduce((acc: Record<string, CategorySales>, quote) => {
-    quote.basket.forEach((item: Record<string, any>) => {
+    quote.basket.forEach((item: BasketItem) => {
       const category = item.category || 'Uncategorized'
       if (!acc[category]) {
         acc[category] = { category, sales: 0, revenue: 0 }
@@ -114,7 +166,7 @@ export async function fetchCategorySales(supabase: SupabaseClient<Database>): Pr
   return Object.values(salesByCategory).sort((a, b) => b.sales - a.sales)
 }
 
-export async function fetchRecentOrders(supabase: SupabaseClient<Database>) {
+export async function fetchRecentOrders(supabase: SupabaseClient<Database>): Promise<RecentOrder[]> {
   const { data: quotes } = await supabase
     .from('quotes')
     .select('*')
@@ -127,8 +179,77 @@ export async function fetchRecentOrders(supabase: SupabaseClient<Database>) {
     id: quote.id,
     customer_name: `${quote.customer_first_name} ${quote.customer_last_name}`,
     status: quote.status,
-    total_amount: quote.basket.reduce((sum: number, item: Record<string, any>) => sum + (item.price * item.quantity), 0),
+    total_amount: quote.basket.reduce((sum: number, item: BasketItem) => sum + (item.price * item.quantity), 0),
     created_at: quote.created_at,
-    items_count: quote.basket.reduce((sum: number, item: Record<string, any>) => sum + item.quantity, 0)
+    items_count: quote.basket.reduce((sum: number, item: BasketItem) => sum + item.quantity, 0)
   }))
+}
+
+export async function fetchData<T>(
+  endpoint: string,
+  params?: QueryParams,
+  options?: RequestOptions
+): Promise<ApiResponse<T>> {
+  try {
+    const queryString = params ? new URLSearchParams(params as Record<string, string>).toString() : ''
+    const url = queryString ? `${endpoint}?${queryString}` : endpoint
+    const response = await fetch(url, options)
+    const data = await response.json()
+    return { data, error: null }
+  } catch (error: unknown) {
+    const errorResponse: ErrorResponse = {
+      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      status: 500
+    }
+    return { data: null, error: errorResponse }
+  }
+}
+
+export async function updateData<T extends GenericData>(
+  endpoint: string, 
+  data: Partial<T>
+): Promise<ApiResponse<T>> {
+  try {
+    const response = await fetch(endpoint, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    const result = await response.json()
+    return { data: result, error: null }
+  } catch (error: unknown) {
+    const errorResponse: ErrorResponse = {
+      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      status: 500
+    }
+    return { data: null, error: errorResponse }
+  }
+}
+
+export async function deleteData<T extends GenericData>(
+  endpoint: string
+): Promise<ApiResponse<T>> {
+  try {
+    const response = await fetch(endpoint, { method: 'DELETE' })
+    const result = await response.json()
+    return { data: result, error: null }
+  } catch (error: unknown) {
+    const errorResponse: ErrorResponse = {
+      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      status: 500
+    }
+    return { data: null, error: errorResponse }
+  }
+}
+
+export async function handleResponse<T>(response: Response): Promise<ApiResult<T>> {
+  const data = await response.json();
+  if (!response.ok) {
+    return {
+      message: data.message || 'An error occurred',
+      code: data.code,
+      details: data.details
+    };
+  }
+  return data;
 } 

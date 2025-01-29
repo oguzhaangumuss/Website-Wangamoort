@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import ImageUpload from './ImageUpload'
 
@@ -32,6 +31,11 @@ interface VariantFormProps {
   onDelete?: () => void
 }
 
+interface VariantField {
+  name: keyof VariantFormData;
+  value: string | number;
+}
+
 export default function VariantForm({ variants = [], onChange, onDelete }: VariantFormProps) {
   // Yeni variant ekleme
   const handleAddVariant = () => {
@@ -48,22 +52,19 @@ export default function VariantForm({ variants = [], onChange, onDelete }: Varia
     ])
   }
 
-  const updateVariant = (index: number, field: keyof VariantFormData, value: Record<string, any>) => {
-    const newVariants = [...variants]
-    newVariants[index] = { ...newVariants[index], [field]: value }
-    onChange(newVariants)
+  const updateVariant = (index: number, field: VariantField): void => {
+    const updatedVariants = [...variants]
+    updatedVariants[index] = { 
+      ...updatedVariants[index], 
+      [field.name]: field.value 
+    }
+    onChange(updatedVariants)
   }
 
-  const handleImagesChange = (variantIndex: number, images: ProductImage[]) => {
-    const newVariants = [...variants]
-    newVariants[variantIndex] = { 
-      ...newVariants[variantIndex], 
-      images: images.map(img => ({
-        ...img,
-        variant_id: newVariants[variantIndex].id // Mevcut variant id'sini koru
-      }))
-    }
-    onChange(newVariants)
+  const handleImagesChange = (variantIndex: number, newImages: ProductImage[]): void => {
+    const updatedVariants = [...variants]
+    updatedVariants[variantIndex].images = newImages
+    onChange(updatedVariants)
   }
 
   const setDefaultImage = (variantIndex: number, imageIndex: number) => {
@@ -119,7 +120,7 @@ export default function VariantForm({ variants = [], onChange, onDelete }: Varia
               <input
                 type="text"
                 value={variant.variant_name || ''}
-                onChange={(e) => updateVariant(index, 'variant_name', { variant_name: e.target.value })}
+                onChange={(e) => updateVariant(index, { name: 'variant_name', value: e.target.value })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
               />
             </div>
@@ -132,7 +133,7 @@ export default function VariantForm({ variants = [], onChange, onDelete }: Varia
               <input
                 type="text"
                 value={variant.size}
-                onChange={(e) => updateVariant(index, 'size', { size: e.target.value })}
+                onChange={(e) => updateVariant(index, { name: 'size', value: e.target.value })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
               />
             </div>
@@ -145,7 +146,7 @@ export default function VariantForm({ variants = [], onChange, onDelete }: Varia
               <input
                 type="text"
                 value={variant.color}
-                onChange={(e) => updateVariant(index, 'color', { color: e.target.value })}
+                onChange={(e) => updateVariant(index, { name: 'color', value: e.target.value })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
               />
             </div>
@@ -159,7 +160,7 @@ export default function VariantForm({ variants = [], onChange, onDelete }: Varia
                 type="number"
                 step="0.01"
                 value={variant.price}
-                onChange={(e) => updateVariant(index, 'price', { price: e.target.value })}
+                onChange={(e) => updateVariant(index, { name: 'price', value: e.target.value })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
               />
             </div>
@@ -171,7 +172,7 @@ export default function VariantForm({ variants = [], onChange, onDelete }: Varia
               </label>
               <select
                 value={variant.stock_status}
-                onChange={(e) => updateVariant(index, 'stock_status', { stock_status: e.target.value as 'in_stock' | 'out_of_stock' | 'pre_order' })}
+                onChange={(e) => updateVariant(index, { name: 'stock_status', value: e.target.value as 'in_stock' | 'out_of_stock' | 'pre_order' })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
               >
                 <option value="in_stock">In Stock</option>
@@ -189,7 +190,7 @@ export default function VariantForm({ variants = [], onChange, onDelete }: Varia
             <ImageUpload
               variantIndex={index}
               initialImages={variant.images}
-              onImagesChange={(variantIndex, images) => handleImagesChange(variantIndex, images)}
+              onImagesChange={(images, variantIndex) => handleImagesChange(variantIndex, images)}
               onSetDefaultImage={(imageIndex) => setDefaultImage(index, imageIndex)}
             />
           </div>

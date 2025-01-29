@@ -154,7 +154,7 @@ export default function ProductTable({ initialProducts }: ProductTableProps) {
                   Delete Product
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delete "{deleteModalData.productName}"? This action cannot be undone and will also delete all variants of this product.
+                  Are you sure you want to delete {deleteModalData.productName}? This action cannot be undone and will also delete all variants of this product.
                 </p>
               </div>
             </div>

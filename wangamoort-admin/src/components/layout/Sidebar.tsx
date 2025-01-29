@@ -4,12 +4,12 @@ import { Fragment } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import {
   HomeIcon,
   ShoppingBagIcon,
   ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -56,10 +56,12 @@ export default function Sidebar({
               <div className="relative mr-16 flex w-full max-w-xs flex-1">
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#152e1b] px-6 pb-4">
                   <div className="flex h-16 shrink-0 items-center">
-                    <img
-                      className="h-8 w-auto"
+                    <Image
                       src="/logo.png"
-                      alt="Wangamoort"
+                      alt="Logo"
+                      width={150}
+                      height={40}
+                      className="h-10"
                     />
                   </div>
                   <nav className="flex flex-1 flex-col">
@@ -101,10 +103,12 @@ export default function Sidebar({
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#152e1b] px-6 pb-4">
           <div className="flex h-16 shrink-0 items-center">
-            <img
-              className="h-8 w-auto"
+            <Image
               src="/logo.png"
-              alt="Wangamoort"
+              alt="Logo"
+              width={150}
+              height={40}
+              className="h-10"
             />
           </div>
           <nav className="flex flex-1 flex-col">

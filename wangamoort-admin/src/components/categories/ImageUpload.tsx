@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
@@ -27,6 +27,10 @@ export default function ImageUpload({ initialImage, onImageChange }: ImageUpload
   const [uploading, setUploading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [currentImage, setCurrentImage] = useState<string | undefined>(initialImage)
+
+  useEffect(() => {
+    setCurrentImage(initialImage)
+  }, [initialImage])
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -83,9 +87,13 @@ export default function ImageUpload({ initialImage, onImageChange }: ImageUpload
     if (files.length === 0) return
 
     const fileList = new DataTransfer()
-    fileList.items.add(files[0]) // Sadece ilk dosyayı al
+    fileList.items.add(files[0])
     
-    await handleFileUpload({ target: { files: fileList.files } } as any)
+    const event = {
+      target: { files: fileList.files }
+    } as React.ChangeEvent<HTMLInputElement>
+    
+    await handleFileUpload(event)
   }
 
   return (

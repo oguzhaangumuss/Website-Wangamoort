@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { v4 as uuidv4 } from 'uuid'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import Image from 'next/image'
 

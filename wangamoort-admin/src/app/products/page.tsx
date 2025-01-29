@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import ProductTable from '../../components/products/ProductTable'
 import { PlusIcon, CubeIcon, FolderIcon, FolderOpenIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { Database } from '@/types/database.types'
+import { Database } from '../../types/database.types'
 
 // Product tipini tanımlayalım
 type Product = Database['public']['Tables']['products']['Row'] & {
@@ -57,51 +57,74 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true)
   const supabase = createClientComponentClient<Database>()
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        // Paralel olarak tüm sayıları çekelim
-        const [
-          { count: totalProducts },
-          { count: totalCategories },
-          { count: totalSubcategories },
-          productsResponse
-        ] = await Promise.all([
-          supabase.from('products').select('*', { count: 'exact', head: true }),
-          supabase.from('categories').select('*', { count: 'exact', head: true }),
-          supabase.from('subcategories').select('*', { count: 'exact', head: true }),
-          supabase
-            .from('products')
-            .select(`
-              *,
-              subcategory: subcategories (
-                *,
-                category: categories (*)
-              ),
-              variants: product_variants (
-                *,
-                images: product_images (*)
-              )
-            `)
-            .order('created_at', { ascending: false })
-        ])
+  const loadData = useCallback(async () => {
+    try {
+      console.group('Products Data Loading')
+      console.time('Products Query')
 
+      const { data: productsData, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          subcategory:subcategories!subcategory_id (
+            *,
+            category:categories!category_id (
+              id,
+              name
+            )
+          ),
+          variants:product_variants!product_id (
+            id,
+            variant_name,
+            size,
+            color,
+            price,
+            stock_status,
+            images:product_images!variant_id (
+              id,
+              url,
+              is_default
+            )
+          )
+        `)
+
+      console.log('Raw Products Data:', productsData)
+      console.log('Query Error:', error)
+
+      if (error) throw error
+
+      if (productsData) {
+        setProducts(productsData)
+        
+        // İstatistikleri güncelle
+        const categories = new Set(productsData.map(p => p.subcategory?.category?.name).filter(Boolean))
+        const subcategories = new Set(productsData.map(p => p.subcategory?.name).filter(Boolean))
+        
         setStats({
-          totalProducts: totalProducts || 0,
-          totalCategories: totalCategories || 0,
-          totalSubcategories: totalSubcategories || 0
+          totalProducts: productsData.length,
+          totalCategories: categories.size,
+          totalSubcategories: subcategories.size
         })
 
-        setProducts(productsResponse.data || [])
-      } catch (error) {
-        console.error('Error loading data:', error)
-      } finally {
-        setLoading(false)
+        console.log('Stats:', {
+          products: productsData.length,
+          categories: categories.size,
+          subcategories: subcategories.size
+        })
       }
-    }
 
-    loadData()
+      console.timeEnd('Products Query')
+    } catch (error) {
+      console.error('Error loading data:', error)
+    } finally {
+      setLoading(false)
+      console.groupEnd()
+    }
   }, [supabase])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   if (loading) {
     return <div>Loading...</div>

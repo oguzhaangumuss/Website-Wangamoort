@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast, Toaster } from 'sonner'
 import { PencilIcon, TrashIcon, PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
@@ -34,8 +34,7 @@ export default function CategoriesPage() {
 
   const supabase = createClientComponentClient<Database>()
 
-  // Kategorileri getir
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('categories')
@@ -44,16 +43,17 @@ export default function CategoriesPage() {
 
       if (error) throw error
       setCategories(data)
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('Error fetching categories:', error)
       toast.error('Failed to fetch categories')
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [supabase])
 
   useEffect(() => {
     fetchCategories()
-  }, [])
+  }, [fetchCategories])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -256,7 +256,7 @@ export default function CategoriesPage() {
                   Delete Category
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delete "{deleteModalData.categoryName}"? This action cannot be undone.
+                  Are you sure you want to delete {deleteModalData.categoryName}? This action cannot be undone.
                 </p>
               </div>
             </div>

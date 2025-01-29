@@ -1,13 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { toast, Toaster } from 'sonner'
-import { PlusIcon, ExclamationTriangleIcon, XMarkIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { toast } from 'sonner'
+import { PencilIcon, TrashIcon, PlusIcon, ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import type { Database } from '@/types/database.types'
 import type { Category, Subcategory } from '@/types/database.types'
-import { v4 as uuidv4 } from 'uuid'
-import ImageUpload from '../../components/subcategories/ImageUpload'
+import Image from 'next/image'
+import ImageUpload from '../../components/categories/ImageUpload'
+
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 export default function SubcategoriesPage() {
   const [subcategories, setSubcategories] = useState<Array<Subcategory & { category: Category }>>([])
@@ -29,28 +32,28 @@ export default function SubcategoriesPage() {
 
   const supabase = createClientComponentClient<Database>()
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
-        .order('name')
-      
+        .order('created_at', { ascending: false })
+
       if (error) throw error
       setCategories(data)
     } catch (error) {
       console.error('Error fetching categories:', error)
       toast.error('Failed to fetch categories')
     }
-  }
+  }, [supabase])
 
-  const fetchSubcategories = async () => {
+  const fetchSubcategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('subcategories')
         .select(`
           *,
-          category:categories(*)
+          category:categories (*)
         `)
         .order('created_at', { ascending: false })
 
@@ -62,12 +65,12 @@ export default function SubcategoriesPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [supabase])
 
   useEffect(() => {
     fetchCategories()
     fetchSubcategories()
-  }, [])
+  }, [fetchCategories, fetchSubcategories])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -152,36 +155,6 @@ export default function SubcategoriesPage() {
     }
   }
 
-  const uploadImage = async (file: File) => {
-    try {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${uuidv4()}.${fileExt}`
-      const filePath = `subcategory-images/${fileName}`
-
-      // S3'e yükleme
-      const { data, error: uploadError } = await supabase
-        .storage
-        .from('wangamoort')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
-        })
-
-      if (uploadError) throw uploadError
-
-      // Public URL'i al
-      const { data: { publicUrl } } = supabase
-        .storage
-        .from('wangamoort')
-        .getPublicUrl(filePath)
-
-      return publicUrl
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      throw error
-    }
-  }
-
   const handleImageChange = (imageUrl: string) => {
     setFormData(prev => ({
       ...prev,
@@ -195,9 +168,6 @@ export default function SubcategoriesPage() {
 
   return (
     <div className="p-6">
-      <Toaster position="top-right" />
-
-      {/* Header */}
       <div className="md:flex md:items-center md:justify-between">
         <div className="min-w-0 flex-1">
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -219,7 +189,6 @@ export default function SubcategoriesPage() {
         </div>
       </div>
 
-      {/* Grid */}
       <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {subcategories.map((subcategory) => (
           <div
@@ -227,15 +196,14 @@ export default function SubcategoriesPage() {
             className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-gray-400"
           >
             <div className="flex-shrink-0">
-              {subcategory.image ? (
-                <img
-                  className="h-10 w-10 rounded-full object-cover"
-                  src={subcategory.image}
+              <div className="w-16 h-16 relative">
+                <Image
+                  src={subcategory.image || '/placeholder.png'}
                   alt={subcategory.name}
+                  fill
+                  className="object-cover rounded-lg"
                 />
-              ) : (
-                <div className="h-10 w-10 rounded-full bg-gray-200" />
-              )}
+              </div>
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-900">{subcategory.name}</p>
@@ -276,7 +244,6 @@ export default function SubcategoriesPage() {
         ))}
       </div>
 
-      {/* Delete Modal */}
       {deleteModalData.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
@@ -289,7 +256,7 @@ export default function SubcategoriesPage() {
                   Delete Subcategory
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delete "{deleteModalData.subcategoryName}"? This action cannot be undone and will also delete all products in this subcategory.
+                  Are you sure you want to delete {deleteModalData.subcategoryName}? This action cannot be undone and will also delete all products in this subcategory.
                 </p>
               </div>
             </div>
@@ -313,7 +280,6 @@ export default function SubcategoriesPage() {
         </div>
       )}
 
-      {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
@@ -335,7 +301,6 @@ export default function SubcategoriesPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Category Select */}
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700">
                   Category
@@ -357,7 +322,6 @@ export default function SubcategoriesPage() {
                 </select>
               </div>
 
-              {/* Name Input */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                   Name
@@ -379,7 +343,6 @@ export default function SubcategoriesPage() {
                 />
               </div>
 
-              {/* Slug Input */}
               <div>
                 <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
                   Slug
@@ -395,7 +358,6 @@ export default function SubcategoriesPage() {
                 />
               </div>
 
-              {/* Image Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Image
@@ -406,7 +368,6 @@ export default function SubcategoriesPage() {
                 />
               </div>
 
-              {/* Submit Button */}
               <div className="mt-5 sm:mt-6">
                 <button
                   type="submit"

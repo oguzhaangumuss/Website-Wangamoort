@@ -5,21 +5,6 @@ import { Database } from '../types/database.types'
 import { Quote } from '../types/database.types'
 import { QuoteStatus } from '../types/quoteStatus'
 
-const ITEMS_PER_PAGE = 10
-
-type ProductWithRelations = {
-  id: string;
-  name: string;
-  subcategory: {
-    name: string;
-  };
-  variants: Array<{
-    variant_name: string | null;
-    size: string;
-    color: string;
-  }>;
-}
-
 type FetchQuotesOptions = {
   page: number
   status?: QuoteStatus | 'all'
@@ -82,7 +67,7 @@ export function useQuotes() {
         search: false 
       }))
     }
-  }, [supabase])
+  }, [supabase, loading.initial])
 
   const updateQuoteStatus = async (id: string, status: QuoteStatus) => {
     try {
@@ -120,7 +105,7 @@ export function useQuotes() {
 
   const exportToExcel = async (quotes: Quote[]) => {
     try {
-      const XLSX = await import('xlsx')
+      const XLSX = await import('xlsx').then(mod => mod.default)
       
       const data = quotes.map(quote => ({
         'Date': new Date(quote.created_at).toLocaleDateString(),

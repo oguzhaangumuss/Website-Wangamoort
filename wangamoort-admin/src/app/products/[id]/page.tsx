@@ -4,7 +4,7 @@ import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { PencilIcon, PlusIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
-import type { Category, Subcategory, Product, ProductVariant, ProductImage } from '@/types/database.types'
+import type { Category, Subcategory, ProductImage } from '@/types/database.types'
 import VariantForm, { VariantFormData } from '../../../components/products/VariantForm'
 import { toast } from 'sonner'
 import Link from 'next/link'
@@ -259,13 +259,6 @@ export default function EditProductPage({ params }: EditProductPageProps) {
       toast.error('Failed to update product')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleVariantChange = (newVariants: VariantFormData[]) => {
-    console.log('Updating variants:', newVariants)
-    if (Array.isArray(newVariants)) {
-      setVariants(newVariants)
     }
   }
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { XMarkIcon, StarIcon as StarOutline, StarIcon as StarSolid } from '@heroicons/react/24/outline'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { toast } from 'react-hot-toast'
 
 // Export edilmiş interface
 export interface ProductImage {
@@ -14,10 +15,15 @@ export interface ProductImage {
   is_default: boolean
 }
 
+interface UploadError {
+  message: string;
+  code: string;
+}
+
 interface ImageUploadProps {
   variantIndex: number
   initialImages?: ProductImage[]
-  onImagesChange: (variantIndex: number, images: ProductImage[]) => void
+  onImagesChange: (images: ProductImage[], variantIndex: number) => void
   onSetDefaultImage: (imageIndex: number) => void
 }
 
@@ -28,6 +34,12 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!
   }
 })
+
+interface FileUploadEvent {
+  target: {
+    files: FileList | null;
+  }
+}
 
 export default function ImageUpload({ 
   variantIndex, 
@@ -42,53 +54,50 @@ export default function ImageUpload({
   useEffect(() => {
     if (JSON.stringify(images) !== JSON.stringify(initialImages)) {
       setImages(initialImages)
+      onImagesChange(initialImages, variantIndex)
     }
-  }, [initialImages])
+  }, [initialImages, images, onImagesChange, variantIndex])
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: FileUploadEvent) => {
     try {
       const files = event.target.files
       if (!files || files.length === 0) return
 
       setUploading(true)
-      const newImages: ProductImage[] = [...images]
+      const file = files[0]
 
-      for (const file of files) {
-        try {
-          const timestamp = new Date().getTime()
-          const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]/g, '-')
-          const filePath = `product-images/${timestamp}-${safeName}`
+      const timestamp = new Date().getTime()
+      const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]/g, '-')
+      const filePath = `product-images/${timestamp}-${safeName}`
 
-          await s3Client.send(new PutObjectCommand({
-            Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
-            Key: filePath,
-            Body: Buffer.from(await file.arrayBuffer()),
-            ContentType: file.type,
-            ACL: 'public-read'
-          }))
+      await s3Client.send(new PutObjectCommand({
+        Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
+        Key: filePath,
+        Body: Buffer.from(await file.arrayBuffer()),
+        ContentType: file.type,
+        ACL: 'public-read'
+      }))
 
-          const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${filePath}`
-          // İlk resim ise veya hiç resim yoksa varsayılan olarak ayarla
-          if (imageUrl) {
-            const isDefault = newImages.length === 0
-            newImages.push({
-              url: imageUrl,
-              is_default: isDefault,
-              alt: file.name
-            })
-          }
-        } catch (uploadError) {
-          console.error('Individual file upload error:', uploadError)
-          throw uploadError
+      const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${filePath}`
+      // İlk resim ise veya hiç resim yoksa varsayılan olarak ayarla
+      if (imageUrl) {
+        const isDefault = images.length === 0
+        const newImage: ProductImage = {
+          url: imageUrl,
+          is_default: isDefault,
+          alt: file.name
         }
+        const newImages = isDefault ? [newImage] : [...images, newImage]
+        setImages(newImages)
+        onImagesChange(newImages, variantIndex)
       }
-
-      const validImages = newImages.filter(img => img.url)
-      setImages(validImages)
-      onImagesChange(variantIndex, validImages)
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      alert(error instanceof Error ? error.message : 'Error uploading image')
+    } catch (error: unknown) {
+      const uploadError: UploadError = {
+        message: error instanceof Error ? error.message : 'An unknown error occurred',
+        code: 'UPLOAD_ERROR'
+      }
+      console.error('Error uploading image:', uploadError)
+      toast.error(uploadError.message)
     } finally {
       setUploading(false)
     }
@@ -105,7 +114,7 @@ export default function ImageUpload({
     }
 
     setImages(newImages)
-    onImagesChange(variantIndex, newImages)
+    onImagesChange(newImages, variantIndex)
   }
 
   const handleSetDefaultImage = (index: number) => {
@@ -114,7 +123,7 @@ export default function ImageUpload({
       is_default: idx === index
     }))
     setImages(newImages)
-    onImagesChange(variantIndex, newImages)
+    onImagesChange(newImages, variantIndex)
     onSetDefaultImage(index)
   }
 
@@ -133,16 +142,17 @@ export default function ImageUpload({
 
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-    e.stopPropagation()
     setIsDragging(false)
 
     const files = Array.from(e.dataTransfer.files)
     if (files.length === 0) return
 
     const fileList = new DataTransfer()
-    files.forEach(file => fileList.items.add(file))
+    fileList.items.add(files[0])
     
-    await handleFileUpload({ target: { files: fileList.files } } as any)
+    await handleFileUpload({ 
+      target: { files: fileList.files }
+    })
   }
 
   return (
