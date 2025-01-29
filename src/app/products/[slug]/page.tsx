@@ -7,30 +7,36 @@ import type { Database } from '@/types/database.types'
 export const revalidate = 3600
 
 async function getProduct(slug: string) {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
   
-  const { data: product, error } = await supabase
-    .from('products')
-    .select(`
-      *,
-      subcategory: subcategories (
+  try {
+    const { data: product, error } = await supabase
+      .from('products')
+      .select(`
         *,
-        category: categories (*)
-      ),
-      variants: product_variants (
-        *,
-        images: product_images (*)
-      )
-    `)
-    .eq('slug', slug)
-    .single()
+        subcategory: subcategories (
+          *,
+          category: categories (*)
+        ),
+        variants: product_variants (
+          *,
+          images: product_images (*)
+        )
+      `)
+      .eq('slug', slug)
+      .single()
 
-  if (error || !product) {
-    console.error('Error fetching product:', error)
+    if (error) {
+      console.error('Error fetching product:', error)
+      return null
+    }
+
+    return product
+  } catch (error) {
+    console.error('Error:', error)
     return null
   }
-
-  return product
 }
 
 // Next.js 15 için güncellenmiş tip tanımlaması
