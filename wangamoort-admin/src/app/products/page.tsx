@@ -5,50 +5,13 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import ProductTable from '../../components/products/ProductTable'
 import { PlusIcon, CubeIcon, FolderIcon, FolderOpenIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { Database } from '../../types/database.types'
-
-// Product tipini tanımlayalım
-type Product = Database['public']['Tables']['products']['Row'] & {
-  subcategory?: {
-    id: string
-    name: string
-    slug: string
-    category_id: string
-    created_at: string
-    image?: string
-    category?: {
-      id: string
-      name: string
-      slug: string
-      created_at: string
-      image?: string
-    }
-  }
-  variants?: Array<{
-    id: string
-    product_id: string
-    variant_name: string | null
-    size: string
-    color: string
-    price: number
-    stock_status: string
-    created_at: string
-    images?: Array<{
-      id: string
-      variant_id: string
-      url: string
-      alt: string
-      created_at: string
-      is_default: boolean
-    }>
-  }>
-}
+import { Database, ExtendedProduct } from '../../types/database.types'
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<ExtendedProduct[]>([])
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalCategories: 0,
@@ -94,7 +57,14 @@ export default function ProductsPage() {
       if (error) throw error
 
       if (productsData) {
-        setProducts(productsData)
+        // Veriyi ExtendedProduct formatına dönüştür
+        const extendedProducts: ExtendedProduct[] = productsData.map(product => ({
+          ...product,
+          stock_status: product.variants?.[0]?.stock_status || 'out_of_stock',
+          updated_at: new Date().toISOString() // Şu anki tarih
+        }))
+
+        setProducts(extendedProducts)
         
         // İstatistikleri güncelle
         const categories = new Set(productsData.map(p => p.subcategory?.category?.name).filter(Boolean))
