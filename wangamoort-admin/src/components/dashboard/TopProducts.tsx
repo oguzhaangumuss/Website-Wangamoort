@@ -37,8 +37,13 @@ export function TopProducts({ products, limit, onLimitChange }: TopProductsProps
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip
-            formatter={(value: number, name: string) => {
-              if (name === 'total_revenue') return formatCurrency(value)
+            formatter={(value, name) => {
+              if (typeof value === 'number') {
+                if (typeof name === 'string' && name === 'total_revenue') {
+                  return formatCurrency(value)
+                }
+                return value
+              }
               return value
             }}
           />
