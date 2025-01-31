@@ -8,13 +8,33 @@ type BasketItem = Database['public']['Tables']['quotes']['Insert']['basket'][0]
 
 export async function POST(request: Request) {
   try {
-    // Request body'i parse et ve logla
+    // Environment variables'ları kontrol et
+    console.log('SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+    console.log('ANON_KEY exists:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+
     const quoteData = await request.json()
     console.log('Received quote data:', JSON.stringify(quoteData, null, 2))
 
-    // Cookie store ve Supabase client oluştur
     const cookieStore = cookies()
-    const supabase = createRouteHandlerClient<Database>({ cookies: () => cookieStore })
+    const supabase = createRouteHandlerClient<Database>({ 
+      cookies: () => cookieStore,
+    })
+
+    // Supabase bağlantısını test et
+    try {
+      const { data: testData, error: testError } = await supabase
+        .from('quotes')
+        .select('id')
+        .limit(1)
+      
+      if (testError) {
+        console.error('Supabase connection test error:', testError)
+      } else {
+        console.log('Supabase connection successful')
+      }
+    } catch (testError) {
+      console.error('Supabase test error:', testError)
+    }
 
     // Veri yapısını kontrol et
     if (!quoteData.customer_first_name || !quoteData.customer_email) {
@@ -45,7 +65,12 @@ export async function POST(request: Request) {
       .select()
 
     if (error) {
-      console.error('Supabase error:', error)
+      console.error('Supabase error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      })
       return NextResponse.json(
         { error: error.message },
         { status: 500 }
@@ -96,7 +121,6 @@ export async function POST(request: Request) {
     )
 
   } catch (error) {
-    // Detaylı hata loglaması
     console.error('Server Error:', error)
     console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
     
