@@ -112,13 +112,13 @@ export default function ProductList({
         {/* Subcategories Grid */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
               {filteredSubcategories.map((subcategory) => (
                 <Link
                   key={subcategory.id}
                   href={`/subcategories/${subcategory.slug}`}
-                  className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl 
-                    transition-shadow duration-300"
+                  className="group bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md overflow-hidden 
+                    hover:shadow-xl transition-shadow duration-300"
                 >
                   {/* Subcategory Image */}
                   <div className="aspect-square relative overflow-hidden rounded-lg">
@@ -127,16 +127,16 @@ export default function ProductList({
                       alt={subcategory.name}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-300"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 33vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 25vw"
                     />
                   </div>
 
                   {/* Subcategory Info */}
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  <div className="p-2 md:p-4">
+                    <h3 className="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2 truncate">
                       {subcategory.name}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs md:text-sm text-gray-600 hidden sm:block">
                       Click to view products
                     </p>
                   </div>
