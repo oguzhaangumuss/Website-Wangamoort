@@ -32,11 +32,11 @@ export default function Products({ categories, subcategories }: ProductsProps) {
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Our Products</h2>
 
         {/* Category Selection */}
-        <div className="flex justify-center mb-8 space-x-2 md:space-x-4 overflow-x-auto pb-4">
+        <div className="flex font-semibold justify-center mb-8 space-x-2 md:space-x-4 overflow-x-auto pb-4">
           {categories.map((category) => (
             <button
               key={category.id}
-              className={`px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 whitespace-nowrap text-sm md:text-base
+              className={`px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 whitespace-nowrap text-base md:text-base
                 ${activeCategory === category.id 
                   ? 'bg-[#152e1b] text-white shadow-lg' 
                   : 'bg-white text-gray-600 hover:bg-gray-50'}`}
