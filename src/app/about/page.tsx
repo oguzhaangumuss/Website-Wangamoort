@@ -26,49 +26,53 @@ export default function AboutPage() {
 
   return (
     <main className="bg-white">
-      {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center mt-[64px]">
+      {/* Hero Section - Responsive Height */}
+      <section className="relative h-[300px] md:h-[60vh] flex items-center mt-[64px]">
         <Image
           src="/womanworker.jpeg"
           alt="About Wangamoort"
           fill
           className="object-cover"
           priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="container mx-auto px-4 relative z-10">
-          <h1 className="text-6xl font-bold text-white mb-6">About Wangamoort</h1>
-          <p className="text-xl text-gray-200 max-w-3xl">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6">
+            About Wangamoort
+          </h1>
+          <p className="text-base md:text-xl text-gray-200 max-w-3xl">
             Creating beautiful spaces with quality furniture and exceptional service.
           </p>
         </div>
       </section>
 
       {/* Content Sections */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="space-y-32">
+          <div className="space-y-16 md:space-y-32">
             {sections.map((section, index) => (
               <div 
                 key={index}
                 className={`flex flex-col ${
                   index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
-                } gap-12 items-center`}
+                } gap-8 md:gap-12 items-center`}
               >
-                <div className="flex-1">
-                  <h2 className="text-4xl font-bold text-[#152e1b] mb-6">
+                <div className="flex-1 w-full">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#152e1b] mb-4 md:mb-6">
                     {section.title}
                   </h2>
-                  <p className="text-lg text-gray-700 leading-relaxed">
+                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
                     {section.content}
                   </p>
                 </div>
-                <div className="flex-1 relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+                <div className="w-full lg:flex-1 relative h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-2xl">
                   <Image
                     src={section.image}
                     alt={section.title}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 </div>
               </div>
