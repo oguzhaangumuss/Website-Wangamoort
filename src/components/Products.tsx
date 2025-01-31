@@ -29,7 +29,7 @@ export default function Products({ categories, subcategories }: ProductsProps) {
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Our Products</h2>
+        <h2 className="text-3xl md:text-3xl font-bold text-center mb-8">Our Products</h2>
 
         {/* Category Selection */}
         <div className="flex font-semibold justify-center mb-8 space-x-2 md:space-x-4 overflow-x-auto pb-4">
