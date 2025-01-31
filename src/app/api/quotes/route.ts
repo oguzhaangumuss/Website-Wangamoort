@@ -2,6 +2,9 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import type { Database } from '@/types/database.types'
+
+type BasketItem = Database['public']['Tables']['quotes']['Insert']['basket'][0]
 
 export async function POST(request: Request) {
   try {
@@ -62,7 +65,7 @@ export async function POST(request: Request) {
             
             <h3>Products:</h3>
             <ul>
-              ${quoteData.basket.map((item: any) => `
+              ${quoteData.basket.map((item: BasketItem) => `
                 <li>Product ID: ${item.product_id} - Quantity: ${item.quantity}</li>
               `).join('')}
             </ul>
