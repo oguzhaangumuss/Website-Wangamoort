@@ -8,38 +8,51 @@ type BasketItem = Database['public']['Tables']['quotes']['Insert']['basket'][0]
 
 export async function POST(request: Request) {
   try {
+    // Request body'i parse et ve logla
     const quoteData = await request.json()
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    console.log('Received quote data:', JSON.stringify(quoteData, null, 2))
 
-    // Veritabanına kaydet
+    // Cookie store ve Supabase client oluştur
+    const cookieStore = cookies()
+    const supabase = createRouteHandlerClient<Database>({ cookies: () => cookieStore })
+
+    // Veri yapısını kontrol et
+    if (!quoteData.customer_first_name || !quoteData.customer_email) {
+      console.error('Missing required fields:', quoteData)
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
+    // Supabase'e kaydet
     const { data, error } = await supabase
       .from('quotes')
       .insert([{
-        company_name: quoteData.company_name,
+        company_name: quoteData.company_name || null,
         customer_first_name: quoteData.customer_first_name,
         customer_last_name: quoteData.customer_last_name,
         customer_email: quoteData.customer_email,
         customer_phone: quoteData.customer_phone,
-        delivery_address: quoteData.delivery_address,
-        is_delivery: quoteData.is_delivery,
-        is_installation: quoteData.is_installation,
-        is_rubbish_removal: quoteData.is_rubbish_removal,
-        notes: quoteData.notes,
-        basket: quoteData.basket,
+        delivery_address: quoteData.delivery_address || null,
+        is_delivery: quoteData.is_delivery || false,
+        is_installation: quoteData.is_installation || false,
+        is_rubbish_removal: quoteData.is_rubbish_removal || false,
+        notes: quoteData.notes || '',
+        basket: quoteData.basket || [],
         status: 'pending'
       }])
       .select()
 
     if (error) {
-      console.error('Database Error:', error)
+      console.error('Supabase error:', error)
       return NextResponse.json(
-        { error: 'Failed to create quote' },
+        { error: error.message },
         { status: 500 }
       )
     }
 
-    // Email gönder
+    // Email göndermeyi dene
     if (process.env.SMTP_HOST) {
       try {
         const transporter = nodemailer.createTransport({
@@ -83,9 +96,12 @@ export async function POST(request: Request) {
     )
 
   } catch (error) {
+    // Detaylı hata loglaması
     console.error('Server Error:', error)
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+    
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     )
   }
