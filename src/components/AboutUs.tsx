@@ -9,8 +9,8 @@ export default function AboutUs() {
         {/* Header with Image */}
         <div className="relative w-full h-[500px] rounded-2xl overflow-hidden group">
           <Image
-            src="/wangamoort3.jpeg"
-            alt="Wangamoort Furniture"
+            src="/womanworker.jpeg"
+            alt="Wangamoort About Us"
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-105"
             priority
