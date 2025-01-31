@@ -13,7 +13,7 @@ export default function Hero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="wangamoort-house.jpg"
+          src="/wangamoort-house.jpg"
           alt="Furniture Background"
           fill
           priority
