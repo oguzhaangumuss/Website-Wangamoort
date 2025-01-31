@@ -46,8 +46,8 @@ export default function Navbar() {
             <Link href="/">
               <Image 
                 src="/logo-ndis.png" 
-                alt="NDIS Logo" 
-                width={80}
+                alt="NDIS Logo"
+                width={70}
                 height={15}
               />
             </Link>

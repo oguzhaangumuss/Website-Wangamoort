@@ -1,8 +1,9 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { notFound } from 'next/navigation'
+//import { notFound } from 'next/navigation'
 import type { Database } from '@/types/database.types'
 import ProductGrid from '@/components/ProductGrid'
+import NotFound from '@/components/not-found'
 
 // Revalidate her saat
 export const revalidate = 3600
@@ -72,9 +73,26 @@ export default async function SubcategoryPage({ params }: PageProps) {
   const { slug } = await params
   const subcategory = await getSubcategoryWithProducts(slug)
 
-  if (!subcategory?.products) {
-    console.error('Subcategory not found:', slug)
-    notFound()
+  // Önce subcategory'nin kendisini kontrol edelim
+  if (!subcategory) {
+    console.log('Subcategory not found:', slug)
+    return <NotFound 
+      title="Subcategory Not Found"
+      message="The subcategory you are looking for doesn't exist or has been moved."
+      buttonText="Back to Categories"
+      buttonHref="/products"
+    />
+  }
+
+  // Sonra ürünleri kontrol edelim
+  if (!subcategory.products || subcategory.products.length === 0) {
+    console.log('No products found for subcategory:', slug)
+    return <NotFound 
+      title="No Products Found"
+      message={`No products found in ${subcategory.name} subcategory.`}
+      buttonText="Back to Categories"
+      buttonHref="/products"
+    />
   }
 
   return (

@@ -20,7 +20,7 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative h-[420px] -mt-16">
+      <div className="relative h-[420px] -mt-16 mb-16">
         <div className="absolute inset-0">
           <div className="relative h-full">
             <div className="absolute inset-0 bg-black/50 z-10" />
