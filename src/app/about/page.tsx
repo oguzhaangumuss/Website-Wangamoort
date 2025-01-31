@@ -29,7 +29,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center mt-[64px]">
         <Image
-          src="/wangamoort3.jpeg"
+          src="/womanworker.jpeg"
           alt="About Wangamoort"
           fill
           className="object-cover"
