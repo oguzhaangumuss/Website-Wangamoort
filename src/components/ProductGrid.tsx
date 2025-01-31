@@ -35,7 +35,7 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
           </div>
         </div>
         <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-center">
-          <h1 className="text-5xl font-bold text-white mb-4 pt-40">
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 pt-40">
             {title || 'Our Products'}
           </h1>
         </div>
@@ -43,9 +43,8 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
 
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6">
           {products.map((product) => {
-            // Tip güvenliği için null check ekleyelim
             const defaultImage = product.variants?.[0]?.images?.find(
               (img): img is ProductImage => img.is_default
             )?.url || '/placeholder.jpg'
@@ -54,8 +53,8 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}
-                className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl 
-                  transition-shadow duration-300"
+                className="group bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md 
+                  overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="aspect-square relative overflow-hidden">
                   <Image
@@ -63,15 +62,15 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
                     alt={product.name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-300"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 25vw"
                   />
                 </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800">
+                <div className="p-2 md:p-4">
+                  <h3 className="text-xs md:text-base lg:text-lg font-semibold text-gray-800 mb-1 md:mb-2 truncate">
                     {product.name}
                   </h3>
                   {product.subcategory && (
-                    <p className="text-sm text-gray-600">
+                    <p className="text-[10px] md:text-sm text-gray-600 truncate">
                       {product.subcategory.name}
                     </p>
                   )}
