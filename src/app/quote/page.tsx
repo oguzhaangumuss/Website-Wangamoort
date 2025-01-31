@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { FaShoppingCart } from 'react-icons/fa'
 import { useCart } from '@/contexts/CartContext'
-import type { QuoteFormData } from '@/types/database.types'
+import type { Database, QuoteFormData } from '@/types/database.types'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -77,9 +77,61 @@ export default function QuotePage() {
 
   const handleNextStep = (e: React.MouseEvent) => {
     e.preventDefault()
+
+    // Her adımda form doğrulama
+    switch(step) {
+      case 1:
+        if (cart.length === 0) {
+          toast.error('Your cart is empty!')
+          return
+        }
+        break
+      case 2:
+        if (!formData.customer_first_name || !formData.customer_last_name || 
+            !formData.customer_email || !formData.customer_phone) {
+          toast.error('Please fill in all required personal information!')
+          return
+        }
+        break
+      case 3:
+        if (formData.is_delivery && (!formData.delivery_address?.street || 
+            !formData.delivery_address?.city || !formData.delivery_address?.state || 
+            !formData.delivery_address?.postcode)) {
+          toast.error('Please fill in all delivery address fields!')
+          return
+        }
+        break
+    }
+
     if (step < 4) {
       setStep(step + 1)
     }
+  }
+
+  const validateForm = () => {
+    // Step 1: Cart kontrolü
+    if (cart.length === 0) {
+      toast.error('Your cart is empty!')
+      return false
+    }
+
+    // Step 2: Kişisel bilgiler kontrolü
+    if (!formData.customer_first_name || !formData.customer_last_name || 
+        !formData.customer_email || !formData.customer_phone) {
+      toast.error('Please fill in all required personal information!')
+      return false
+    }
+
+    // Step 3: Teslimat seçili ise adres kontrolü
+    if (formData.is_delivery) {
+      if (!formData.delivery_address?.street || !formData.delivery_address?.city || 
+          !formData.delivery_address?.state || !formData.delivery_address?.postcode) {
+        toast.error('Please fill in all delivery address fields!')
+        return false
+      }
+    }
+
+    return true
   }
 
   const handleSubmitQuote = async (e: React.FormEvent) => {
@@ -89,8 +141,14 @@ export default function QuotePage() {
       return
     }
 
+    // Form doğrulama
+    if (!validateForm()) {
+      return
+    }
+
     try {
-      const quoteData = {
+      // Database tipine uygun veri hazırlama
+      const quoteData: Database['public']['Tables']['quotes']['Insert'] = {
         ...formData,
         basket: cart.map(item => ({
           product_id: item.product_id,
@@ -99,15 +157,10 @@ export default function QuotePage() {
           selected_color: item.color,
           price: item.price
         })),
-        status: 'pending',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        status: 'pending'
       }
 
-      // Debug için verileri konsola yazdır
-      console.log('Form Data:', formData)
-      console.log('Cart Items:', cart)
-      console.log('Final Quote Data:', quoteData)
+      console.log('Submitting quote data:', quoteData) // Debug için
 
       const response = await fetch('/api/quotes', {
         method: 'POST',
@@ -119,16 +172,19 @@ export default function QuotePage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        console.error('API Error Response:', errorData)
-        throw new Error('Failed to submit quote')
+        console.error('API Error:', errorData)
+        throw new Error(errorData.message || 'Failed to submit quote')
       }
+
+      const result = await response.json()
+      console.log('Quote submitted successfully:', result)
 
       toast.success('Quote request submitted successfully!')
       clearCart()
-      router.push('/')
+      router.push('/') // veya başka bir success sayfasına yönlendir
     } catch (error) {
       console.error('Error submitting quote:', error)
-      toast.error('Failed to submit quote. Please try again.')
+      toast.error(error instanceof Error ? error.message : 'Failed to submit quote. Please try again.')
     }
   }
 
