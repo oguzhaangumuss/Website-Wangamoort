@@ -11,6 +11,8 @@ async function getProduct(slug: string) {
   const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
   
   try {
+    console.log('Fetching product with slug:', slug)
+
     const { data: product, error } = await supabase
       .from('products')
       .select(`
@@ -28,10 +30,11 @@ async function getProduct(slug: string) {
       .single()
 
     if (error) {
-      console.error('Error fetching product:', error)
+      console.error('Error details:', error)
       return null
     }
 
+    console.log('Found product:', product)
     return product
   } catch (error) {
     console.error('Error:', error)
@@ -39,15 +42,17 @@ async function getProduct(slug: string) {
   }
 }
 
-// Next.js 15 için güncellenmiş tip tanımlaması
-type PageProps = {
-  params: Promise<{ slug: string }>
-}
-
-export default async function ProductPage({ params }: PageProps) {
+// DOĞRU
+export default async function ProductPage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}) {
   const { slug } = await params
+  console.log('Requested slug:', slug) // Debug için ekleyelim
+  
   const product = await getProduct(slug)
-
+  
   if (!product) {
     notFound()
   }
