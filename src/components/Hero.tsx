@@ -1,12 +1,17 @@
 'use client'
 import Image from 'next/image'
 import { FaPhoneAlt } from 'react-icons/fa'
-import Link from 'next/link'
 
 export default function Hero() {
   const scrollToHowToOrder = () => {
     const element = document.getElementById('how-to-order')
-    element?.scrollIntoView({ behavior: 'smooth' })
+    if (element) {
+      const offset = element.offsetTop - 100 // Navbar yüksekliği için offset
+      window.scrollTo({
+        top: offset,
+        behavior: 'smooth'
+      })
+    }
   }
 
   return (
@@ -41,7 +46,8 @@ export default function Hero() {
               className="bg-[#ffd230] text-[#152e1b] px-8 py-4 
                 rounded-lg transition-all duration-300 flex items-center font-semibold
                 shadow-lg hover:shadow-xl hover:-translate-y-1.5
-                group-hover/buttons:bg-white hover:!bg-white">
+                group-hover/buttons:bg-white hover:!bg-white cursor-pointer"
+            >
               <span>Request a Quote</span>
             </button>
             <a 
