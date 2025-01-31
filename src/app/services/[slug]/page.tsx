@@ -26,8 +26,8 @@ export default async function ServicePage({ params }: PageProps) {
 
   return (
     <main>
-      {/* Hero Section */}
-      <div className="relative h-[420px] -mt-16">
+      {/* Hero Section - Responsive Height */}
+      <div className="relative h-[300px] md:h-[420px] -mt-16">
         <div className="absolute inset-0">
           <div className="relative h-full">
             <div className="absolute inset-0 bg-black/50 z-10" />
@@ -38,22 +38,23 @@ export default async function ServicePage({ params }: PageProps) {
                 fill
                 className="object-cover"
                 priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
               />
             </div>
           </div>
         </div>
         <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-center">
-          <h1 className="text-5xl font-bold text-white mb-4 pt-40">{service.title}</h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 pt-20 md:pt-40">{service.title}</h1>
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="py-16">
+      <div className="py-8 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* First Part of Content */}
-            <div className="space-y-6">
-              <div className="prose prose-lg max-w-none">
+            <div className="space-y-4 md:space-y-6">
+              <div className="prose prose-base md:prose-lg max-w-none">
                 {service.description.split('\n\n').slice(0, 2).map((paragraph, index) => (
                   <p key={index} className="text-gray-600 leading-relaxed">
                     {paragraph}
@@ -62,13 +63,14 @@ export default async function ServicePage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Service Image */}
-            <div className="relative h-[500px] rounded-xl overflow-hidden shadow-xl">
+            {/* Service Image - Responsive Height */}
+            <div className="relative h-[300px] md:h-[500px] rounded-xl overflow-hidden shadow-xl">
               <Image
                 src={service.contentImage || service.heroImage}
                 alt={`${service.title} Service`}
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
               />
             </div>
 

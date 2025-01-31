@@ -27,7 +27,7 @@ const additionalServices = [
     id: 'rubbish_removal',
     name: 'Rubbish Removal',
     description: 'Complete cleanup and disposal service',
-    image: '/images/services/rubbish/rubbish.jpg'
+    image: '/images/services/rubbish/rubbish.png'
   }
 ]
 
