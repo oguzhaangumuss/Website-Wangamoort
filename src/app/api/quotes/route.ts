@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     // Supabase bağlantısını test et
     try {
-      const { data: testData, error: testError } = await supabase
+      const { error: testError } = await supabase
         .from('quotes')
         .select('id')
         .limit(1)
