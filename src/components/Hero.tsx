@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { FaPhoneAlt } from 'react-icons/fa'
+import Link from 'next/link'
 
 export default function Hero() {
   const scrollToHowToOrder = () => {
@@ -27,10 +28,10 @@ export default function Hero() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl text-white">
           <h1 className="text-5xl font-bold mb-8">
-          Your Trusted Partner for Home Design and Appliance Solutions
+            Your Trusted Partner for Home Design and Appliance Solutions
           </h1>
           <p className="text-2xl mb-10 text-gray-200">
-          Delivering Quality, Speed, and Reliability—Tailored for Every Need.
+            Delivering Quality, Speed, and Reliability—Tailored for Every Need.
           </p>
           
           {/* Call to Action Buttons */}
@@ -43,16 +44,19 @@ export default function Hero() {
                 group-hover/buttons:bg-white hover:!bg-white">
               <span>Request a Quote</span>
             </button>
-            <button className="bg-white text-[#152e1b] px-8 py-4 
-              rounded-lg transition-all duration-300 flex items-center gap-2 font-semibold
-              shadow-lg hover:shadow-xl hover:-translate-y-1.5
-              group-hover/buttons:bg-[#ffd230] hover:!bg-[#ffd230]">
+            <a 
+              href="tel:+61493324731"
+              className="bg-white text-[#152e1b] px-8 py-4 
+                rounded-lg transition-all duration-300 flex items-center gap-2 font-semibold
+                shadow-lg hover:shadow-xl hover:-translate-y-1.5
+                group-hover/buttons:bg-[#ffd230] hover:!bg-[#ffd230]"
+            >
               <div className="bg-[#ffd230] p-2 rounded-full transition-colors duration-300
                 group-hover/buttons:bg-white hover:!bg-white">
                 <FaPhoneAlt className="text-[#152e1b]" />
               </div>
               <span>+61 493 324 731</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>

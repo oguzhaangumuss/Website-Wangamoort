@@ -77,7 +77,7 @@ export default function CartSlider({ isOpen, onClose }: CartSliderProps) {
                           >
                             <span className="absolute -inset-0.5" />
                             <span className="sr-only">Close panel</span>
-                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                            <XMarkIcon className="h-8 w-8" aria-hidden="true" />
                           </button>
                         </div>
                       </div>
