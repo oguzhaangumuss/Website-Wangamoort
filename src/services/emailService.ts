@@ -1,10 +1,11 @@
 import nodemailer from 'nodemailer'
 import { QuoteData } from '@/types/quote.types'
+import {  } from '@/types/database.types'
 
 const createHtmlContent = (quoteData: QuoteData) => `
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
     <div style="background-color: #152e1b; padding: 20px; border-radius: 8px 8px 0 0;">
-      <h1 style="color: white; margin: 0; text-align: center;">New Quote Request</h1>
+      <h1 style="color: white; margin: 0; text-align: center;">Quote Request - Case #${quoteData.case_id}</h1>
     </div>
     
     <div style="background-color: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -68,17 +69,32 @@ const createHtmlContent = (quoteData: QuoteData) => `
         <table style="width: 100%; border-collapse: collapse;">
           <thead>
             <tr style="background-color: #f0f7f1;">
-              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #152e1b;">Product ID</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #152e1b;">Product</th>
+              <th style="padding: 12px; text-align: left; border-bottom: 2px solid #152e1b;">Variant</th>
+              <th style="padding: 12px; text-align: center; border-bottom: 2px solid #152e1b;">Size</th>
+              <th style="padding: 12px; text-align: center; border-bottom: 2px solid #152e1b;">Color</th>
               <th style="padding: 12px; text-align: center; border-bottom: 2px solid #152e1b;">Quantity</th>
+              <th style="padding: 12px; text-align: right; border-bottom: 2px solid #152e1b;">Price</th>
             </tr>
           </thead>
           <tbody>
             ${quoteData.basket.map(item => `
               <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.product_id}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.product_name}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.variant_name}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.selected_size || '-'}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.selected_color || '-'}</td>
                 <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">$${item.price.toFixed(2)}</td>
               </tr>
             `).join('')}
+            <tr style="background-color: #f0f7f1;">
+              <td colspan="4" style="padding: 12px; border-top: 2px solid #152e1b;"></td>
+              <td style="padding: 12px; border-top: 2px solid #152e1b; text-align: right;"><strong>Total:</strong></td>
+              <td style="padding: 12px; border-top: 2px solid #152e1b; text-align: right;"><strong>$${
+                quoteData.basket.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)
+              }</strong></td>
+            </tr>
           </tbody>
         </table>
       </div>

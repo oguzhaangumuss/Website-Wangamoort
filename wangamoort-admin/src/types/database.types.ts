@@ -161,6 +161,7 @@ export interface Database {
       quotes: {
         Row: {
           id: string
+          case_id: number
           created_at: string
           updated_at: string
           status: string
@@ -185,11 +186,13 @@ export interface Database {
             selected_size: string
             selected_color: string
             price: number
-            product_name?: string
+            product_name: string
+            variant_name: string
           }>
         }
         Insert: {
           id?: string
+          case_id?: number
           created_at?: string
           updated_at?: string
           status?: string
@@ -218,6 +221,7 @@ export interface Database {
         }
         Update: {
           id?: string
+          case_id?: number
           updated_at?: string
           status?: string
           company_name?: string
@@ -313,13 +317,15 @@ export type QuoteBasketItem = {
   selected_size?: string
   selected_color?: string
   price: number
-  product_name?: string
+  product_name: string
+  variant_name: string
 }
 
 export type Quote = Omit<
   Database['public']['Tables']['quotes']['Row'], 
   'company_name' | 'basket' | 'delivery_address' | 'notes'
 > & {
+  case_id: number
   basket: QuoteBasketItem[]
   company_name?: string
   delivery_address?: {

@@ -31,6 +31,11 @@ export function QuoteRow({ quote, onStatusChange, onViewDetails }: QuoteRowProps
   return (
     <tr className="border-b hover:bg-gray-50">
       <td className="p-4">{formattedDate}</td>
+      <td className="p-4 text-center">
+        <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+          #{quote.case_id}
+        </span>
+      </td>
       <td className="p-4">
         <div>
           {quote.customer_first_name} {quote.customer_last_name}

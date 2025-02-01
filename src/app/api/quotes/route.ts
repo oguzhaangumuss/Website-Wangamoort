@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { Database } from '@/types/database.types'
 import { sendQuoteEmail } from '@/services/emailService'
+import { BasketItem } from '@/types/quote.types'
 
 export async function POST(request: Request) {
   try {
@@ -41,11 +42,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // Supabase'e kaydet
+    // Quote'u doğrudan kaydedelim
     const { data, error } = await supabase
       .from('quotes')
-      .insert([quoteData])
-      .select()
+      .insert([quoteData])  // Orijinal veriyi değiştirmeden kaydet
+      .select('*, case_id')
+      .single()
 
     if (error) {
       console.error('Supabase error:', error)
@@ -54,10 +56,9 @@ export async function POST(request: Request) {
 
     // Email gönder
     try {
-      await sendQuoteEmail(quoteData)
+      await sendQuoteEmail(data) // Kaydedilen veriyi kullan
     } catch (emailError) {
       console.error('Email error:', emailError)
-      // Email hatası olsa bile quote kaydedildiği için 201 dönüyoruz
     }
 
     return NextResponse.json(

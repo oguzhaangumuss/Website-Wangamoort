@@ -155,7 +155,9 @@ export default function QuotePage() {
           quantity: item.quantity,
           selected_size: item.size,
           selected_color: item.color,
-          price: item.price
+          price: item.price,
+          product_name: item.name,
+          variant_name: item.variant_name
         })),
         status: 'pending'
       }

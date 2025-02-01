@@ -1,16 +1,22 @@
-type DeliveryAddress = {
+export type DeliveryAddress = {
   street: string
   city: string
   state: string
   postcode: string
 }
 
-type BasketItem = {
+export type BasketItem = {
   product_id: string
+  price: number
   quantity: number
+  product_name: string
+  variant_name: string
+  selected_size?: string
+  selected_color?: string
 }
 
 export type QuoteData = {
+  case_id: number
   company_name?: string
   customer_first_name: string
   customer_last_name: string

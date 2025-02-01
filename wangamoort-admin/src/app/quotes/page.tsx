@@ -187,12 +187,13 @@ export default function QuotesPage() {
 
       {/* Quotes Tablosu */}
       <div className="bg-white rounded-lg shadow">
-        <table className="w-full">
+        <table className="min-w-full">
           <thead>
-            <tr className="border-b">
+            <tr className="bg-gray-50">
               <th className="p-4 text-left">Date</th>
+              <th className="p-4 text-center">Case ID</th>
               <th className="p-4 text-left">Customer</th>
-              <th className="p-4 text-left">Amount</th>
+              <th className="p-4 text-left">Total</th>
               <th className="p-4 text-left">Status</th>
               <th className="p-4 text-left">Actions</th>
             </tr>
