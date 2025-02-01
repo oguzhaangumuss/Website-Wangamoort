@@ -254,21 +254,6 @@ export default function ProductDetail({ product, variant }: { product: Product, 
               </div>
             </div>
 
-            {/* Ürün Açıklaması */}
-            <div className="prose prose-sm max-w-none">
-              <h3 className="text-sm font-medium text-gray-900">Description</h3>
-              <div className="mt-2 text-gray-600 whitespace-pre-line">
-                {product.description}
-              </div>
-            </div>
-
-            {/* Seçili varyant bilgisi */}
-            {selectedVariant && (
-              <div className="mt-4 text-sm text-gray-500">
-                Selected: {selectedSize} - {selectedColor}
-              </div>
-            )}
-
             {/* Add to Cart Butonu */}
             <button
               onClick={handleAddToCart}
@@ -285,6 +270,23 @@ export default function ProductDetail({ product, variant }: { product: Product, 
               </svg>
               <span>Add to Cart</span>
             </button>
+
+            {/* Ürün Açıklaması */}
+            <div className="prose prose-sm max-w-none">
+              <h3 className="text-sm font-medium text-gray-900">Description</h3>
+              <div className="mt-2 text-gray-600 whitespace-pre-line">
+                {product.description}
+              </div>
+            </div>
+
+            {/* Seçili varyant bilgisi */}
+            {selectedVariant && (
+              <div className="mt-4 text-sm text-gray-500">
+                Selected: {selectedSize} - {selectedColor}
+              </div>
+            )}
+
+            
 
             {/* İletişim Butonu */}
             <button className="w-full bg-[#152e1b] text-white py-3 px-8 rounded-md hover:bg-[#1f4429] transition-colors">
