@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { Database } from '@/types/database.types'
 import { sendQuoteEmail } from '@/services/emailService'
-import { BasketItem } from '@/types/quote.types'
+
 
 export async function POST(request: Request) {
   try {
