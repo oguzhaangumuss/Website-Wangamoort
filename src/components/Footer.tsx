@@ -19,6 +19,20 @@ export default function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const scrollToServices = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const element = document.getElementById('services')
+    if (element) {
+      const yOffset = -100 // Navbar yüksekliği için offset
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset
+      
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   return (
     <footer className="relative mt-32 bg-gradient-to-br from-[#1f2937] via-[#274159] to-[#1f2937]">
       {/* Wave SVG with gradient */}
@@ -85,12 +99,13 @@ export default function Footer() {
               {[
                 { name: 'About Us', href: '/about' },
                 { name: 'Our Products', href: '/products' },
-                { name: 'Our Services', href: '/services' },
+                { name: 'Our Services', href: '#services', onClick: scrollToServices },
                 { name: 'Contact', href: '/contact' }
               ].map((item) => (
                 <li key={item.name}>
                   <Link 
                     href={item.href}
+                    onClick={item.onClick}
                     className="text-gray-300 hover:text-white transition-colors hover:translate-x-2 inline-block"
                   >
                     {item.name}

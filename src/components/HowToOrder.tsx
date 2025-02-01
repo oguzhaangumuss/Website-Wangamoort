@@ -37,7 +37,7 @@ export default function HowToOrder() {
   ]
 
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+    <section id="how-to-order" className="py-16 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 max-w-[1400px]">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center mb-12">

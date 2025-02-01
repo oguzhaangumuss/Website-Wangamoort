@@ -27,7 +27,7 @@ export default function AboutPage() {
   return (
     <main className="bg-white">
       {/* Hero Section - Responsive Height */}
-      <section className="relative h-[300px] md:h-[60vh] flex items-center mt-[64px]">
+      <section className="relative h-[300px] md:h-[60vh] flex items-end md:items-center mt-[64px] pb-8 md:pb-0">
         <Image
           src="/womanworker.jpeg"
           alt="About Wangamoort"

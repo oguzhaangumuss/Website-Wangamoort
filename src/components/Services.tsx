@@ -5,7 +5,7 @@ import content from '../../public/content.json'
 
 export default function Services() {
   return (
-    <section className="py-12 bg-white">
+    <section id="services" className="py-12 bg-white">
       <div className="container mx-auto px-2 max-w-[1400px]">
         {/* Header Section */}
         <div className="max-w-3xl mx-auto text-center mb-12">

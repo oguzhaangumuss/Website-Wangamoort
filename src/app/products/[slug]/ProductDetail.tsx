@@ -162,7 +162,11 @@ export default function ProductDetail({ product, variant }: { product: Product, 
           <div className="space-y-6">
             {/* Breadcrumb */}
             <div className="text-sm text-gray-500">
-              {product.subcategory?.category?.name} / {product.subcategory?.name}
+                {product.subcategory?.category?.name}
+               / 
+              <Link href={`/subcategories/${product.subcategory?.slug}`} className="hover:text-[#152e1b] hover:underline transition-colors">
+                {product.subcategory?.name}
+              </Link>
             </div>
 
             {/* Ürün Başlığı */}

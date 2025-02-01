@@ -18,7 +18,7 @@ type Category = {
   slug: string
 }
 
-type ProductsProps = {
+type ProductsProps = {  
   categories: Category[]
   subcategories: Subcategory[]
 }
@@ -32,7 +32,7 @@ export default function Products({ categories, subcategories }: ProductsProps) {
         <h2 className="text-3xl md:text-3xl font-bold text-center mb-8">Our Products</h2>
 
         {/* Category Selection */}
-        <div className="flex font-semibold justify-center mb-8 space-x-2 md:space-x-4 overflow-x-auto pb-4">
+        <div className="flex font-semibold mb-8 space-x-2 md:space-x-4 overflow-x-auto pb-4">
           {categories.map((category) => (
             <button
               key={category.id}
@@ -55,7 +55,7 @@ export default function Products({ categories, subcategories }: ProductsProps) {
               <Link 
                 key={subcategory.id}
                 href={`/subcategories/${subcategory.slug}`}
-                className="bg-white rounded-lg shadow-sm md:shadow-md overflow-hidden 
+                className="bg-white rounded-lg shadow-md md:shadow-md overflow-hidden 
                   transition-transform duration-300 hover:scale-105"
               >
                 {/* Subcategory Image */}
@@ -71,10 +71,10 @@ export default function Products({ categories, subcategories }: ProductsProps) {
 
                 {/* Subcategory Details */}
                 <div className="p-2 md:p-4">
-                  <h3 className="text-xs md:text-base lg:text-lg font-semibold mb-1 md:mb-2 truncate">
+                  <h3 className="text-md md:text-base lg:text-lg font-semibold mb-1 md:mb-2 truncate">
                     {subcategory.name}
                   </h3>
-                  <div className="mt-1 md:mt-2 text-[#152e1b] hover:text-[#1f432a] flex items-center text-[10px] md:text-sm">
+                  <div className="mt-1 md:mt-2 text-[#152e1b] hover:text-[#1f432a] flex items-center text-[10px]  md:text-sm">
                     View Products
                     <FaArrowRight className="ml-1 md:ml-2 w-2 h-2 md:w-3 md:h-3" />
                   </div>

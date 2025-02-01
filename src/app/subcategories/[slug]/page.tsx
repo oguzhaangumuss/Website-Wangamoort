@@ -4,6 +4,8 @@ import { cookies } from 'next/headers'
 import type { Database } from '@/types/database.types'
 import ProductGrid from '@/components/ProductGrid'
 import NotFound from '@/components/not-found'
+import ProductSkeleton from '@/components/skeletons/ProductSkeleton'
+import { Suspense } from 'react'
 
 // Revalidate her saat
 export const revalidate = 3600
@@ -71,9 +73,18 @@ type PageProps = {
 
 export default async function SubcategoryPage({ params }: PageProps) {
   const { slug } = await params
+
+  return (
+    <Suspense fallback={<ProductSkeleton />}>
+      <SubcategoryContent slug={slug} />
+    </Suspense>
+  )
+}
+
+// Async içeriği ayrı bir component'e taşıyoruz
+async function SubcategoryContent({ slug }: { slug: string }) {
   const subcategory = await getSubcategoryWithProducts(slug)
 
-  // Önce subcategory'nin kendisini kontrol edelim
   if (!subcategory) {
     console.log('Subcategory not found:', slug)
     return <NotFound 
@@ -84,7 +95,6 @@ export default async function SubcategoryPage({ params }: PageProps) {
     />
   }
 
-  // Sonra ürünleri kontrol edelim
   if (!subcategory.products || subcategory.products.length === 0) {
     console.log('No products found for subcategory:', slug)
     return <NotFound 

@@ -6,9 +6,11 @@ export default function Hero() {
   const scrollToHowToOrder = () => {
     const element = document.getElementById('how-to-order')
     if (element) {
-      const offset = element.offsetTop - 100 // Navbar yüksekliği için offset
+      const yOffset = -115 // Navbar yüksekliği için offset
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset
+      
       window.scrollTo({
-        top: offset,
+        top: y,
         behavior: 'smooth'
       })
     }
@@ -52,14 +54,14 @@ export default function Hero() {
             </button>
             <a 
               href="tel:+61493324731"
-              className="bg-white text-[#152e1b] px-8 py-4 
+              className="bg-white text-[#152e1b] px-8 py-3.5 pr-4 pl-4 
                 rounded-lg transition-all duration-300 flex items-center gap-2 font-semibold
                 shadow-lg hover:shadow-xl hover:-translate-y-1.5
                 group-hover/buttons:bg-[#ffd230] hover:!bg-[#ffd230]"
             >
-              <div className="bg-[#ffd230] p-2 rounded-full transition-colors duration-300
+              <div className="bg-[#ffd230] p-1 rounded-full transition-colors duration-300
                 group-hover/buttons:bg-white hover:!bg-white">
-                <FaPhoneAlt className="text-[#152e1b]" />
+                <FaPhoneAlt className="text-[#152e1b] text-lg" />
               </div>
               <span>+61 493 324 731</span>
             </a>

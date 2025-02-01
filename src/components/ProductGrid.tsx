@@ -43,7 +43,7 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
 
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-3 md:grid-cols-4  gap-2 gap-2 sm:gap-4 md:gap-6">
           {products.map((product) => {
             const defaultImage = product.variants?.[0]?.images?.find(
               (img): img is ProductImage => img.is_default
@@ -66,11 +66,11 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
                   />
                 </div>
                 <div className="p-2 md:p-4">
-                  <h3 className="text-xs md:text-base lg:text-lg font-semibold text-gray-800 mb-1 md:mb-2 truncate">
+                  <h3 className="text-base md:text-base lg:text-lg font-semibold text-gray-800 mb-1 md:mb-2 truncate">
                     {product.name}
                   </h3>
                   {product.subcategory && (
-                    <p className="text-[10px] md:text-sm text-gray-600 truncate">
+                    <p className="text-sm md:text-sm text-gray-600 truncate">
                       {product.subcategory.name}
                     </p>
                   )}

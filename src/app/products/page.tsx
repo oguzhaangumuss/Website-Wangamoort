@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import ProductList from './ProductList'
+import ProductSkeleton from '@/components/skeletons/ProductSkeleton'
 import { Database } from '@/types/database.types'
 
 type Subcategory = {
@@ -82,7 +83,7 @@ export default function ProductsPage() {
   }, [supabase])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <ProductSkeleton />
   }
 
   return (
