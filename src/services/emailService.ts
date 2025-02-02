@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import { QuoteData } from '@/types/quote.types'
 import {  } from '@/types/database.types'
+import { ContactFormData } from '../types/contact.types'
 
 const createHtmlContent = (quoteData: QuoteData) => `
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -115,6 +116,45 @@ const createHtmlContent = (quoteData: QuoteData) => `
   </div>
 `
 
+const createContactHtmlContent = (formData: ContactFormData) => `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+    <div style="background-color: #152e1b; padding: 20px; border-radius: 8px 8px 0 0;">
+      <h1 style="color: white; margin: 0; text-align: center;">New Contact Form Submission</h1>
+    </div>
+    
+    <div style="background-color: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <div style="margin-bottom: 30px;">
+        <h2 style="color: #152e1b; border-bottom: 2px solid #152e1b; padding-bottom: 10px;">Contact Information</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Full Name:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${formData.name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Email:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${formData.email}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Phone:</strong></td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${formData.phone || 'Not provided'}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="margin-bottom: 30px;">
+        <h2 style="color: #152e1b; border-bottom: 2px solid #152e1b; padding-bottom: 10px;">Message</h2>
+        <p style="background-color: #f0f7f1; padding: 15px; border-radius: 4px; margin: 0; white-space: pre-wrap;">
+          ${formData.message}
+        </p>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+      <p>This is an automated message from Wangamoort Contact Form</p>
+    </div>
+  </div>
+`
+
 export async function sendQuoteEmail(quoteData: QuoteData) {
   try {
     const transporter = nodemailer.createTransport({
@@ -162,6 +202,68 @@ export async function sendQuoteEmail(quoteData: QuoteData) {
     }
   } catch (error) {
     console.error('Email sending failed:', error)
+    throw error
+  }
+}
+
+export async function sendContactEmail(formData: ContactFormData) {
+  try {
+    console.log('Creating email transporter...')
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    })
+
+    console.log('Verifying SMTP connection...')
+    await transporter.verify()
+    console.log('SMTP connection verified')
+
+    const mailOptions = {
+      from: `"Wangamoort Contact Form" <${process.env.SMTP_FROM}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: `New Contact Form Submission - ${formData.name}`,
+      html: createContactHtmlContent(formData)
+    }
+
+    console.log('Mail options prepared:', {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject
+    })
+
+    // Retry mechanism
+    for (let i = 0; i < 3; i++) {
+      try {
+        console.log(`Email sending attempt ${i + 1}...`)
+        const info = await transporter.sendMail(mailOptions)
+        console.log('Contact email sent successfully:', info.messageId)
+        return info
+      } catch (error) {
+        console.error(`Attempt ${i + 1} failed:`, {
+          error,
+          attempt: i + 1,
+          timestamp: new Date().toISOString()
+        })
+        if (i === 2) throw error
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+      }
+    }
+  } catch (error) {
+    console.error('Contact email sending failed:', {
+      error,
+      formData,
+      env: {
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        user: process.env.SMTP_USER?.substring(0, 3) + '***',
+        from: process.env.SMTP_FROM?.substring(0, 3) + '***'
+      }
+    })
     throw error
   }
 }

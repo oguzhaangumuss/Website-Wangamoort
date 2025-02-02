@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from 'react-icons/fa'
 import { toast } from 'sonner'
+import { sendContactEmail } from '@/services/emailService'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -14,9 +15,34 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Form gönderme işlemi burada yapılacak
-    toast.success('Message sent successfully!')
-    setFormData({ name: '', email: '', phone: '', message: '' })
+    try {
+      console.log('Sending contact form data:', formData)
+      
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to send message')
+      }
+
+      console.log('Email send result:', result)
+      toast.success('Message sent successfully!')
+      setFormData({ name: '', email: '', phone: '', message: '' })
+    } catch (error) {
+      console.error('Contact form error details:', {
+        error,
+        formData,
+        timestamp: new Date().toISOString()
+      })
+      toast.error('Failed to send message. Please try again later.')
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
