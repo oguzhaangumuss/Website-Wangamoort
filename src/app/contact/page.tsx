@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from 'react-icons/fa'
 import { toast } from 'sonner'
-import { sendContactEmail } from '@/services/emailService'
+
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
