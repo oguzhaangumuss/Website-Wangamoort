@@ -24,7 +24,7 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="pt-24 pb-16 bg-[#F9F9F9]">
+    <main id="contact" className="pt-24 pb-16 bg-[#F9F9F9]">
       <div className="container mx-auto px-4">
         {/* Header Section */}
         <div className="text-center mb-16">
@@ -118,7 +118,7 @@ export default function ContactPage() {
               <h2 className="text-2xl font-semibold mb-6 text-[#152e1b]">Contact Information</h2>
               <div className="space-y-6">
                 {[
-                  { icon: FaMapMarkerAlt, text: 'Sydney, Australia', href: null },
+                  { icon: FaMapMarkerAlt, text: 'Culloden Road Marsfield 2122 NSW \n Sydney Australia', href: null },
                   { icon: FaPhone, text: '+61 493 324 731', href: 'tel:+61493324731' },
                   { icon: FaWhatsapp, text: 'WhatsApp Contact', href: 'https://wa.me/61493324731' },
                   { icon: FaEnvelope, text: 'info@wangamoort.com', href: 'mailto:info@wangamoort.com' }
@@ -135,7 +135,7 @@ export default function ContactPage() {
                         {item.text}
                       </a>
                     ) : (
-                      <span className="text-gray-600">{item.text}</span>
+                      <span className="text-gray-600 whitespace-pre-line">{item.text}</span>
                     )}
                   </div>
                 ))}
@@ -147,7 +147,7 @@ export default function ContactPage() {
               <h2 className="text-2xl font-semibold mb-6 text-[#152e1b]">Location</h2>
               <div className="aspect-video rounded-lg overflow-hidden border-2 border-[#ffd230]">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d424146.10282421886!2d150.65178800550147!3d-33.84792702771172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b129838f39a743f%3A0x3017d681632a850!2sSydney%20NSW%2C%20Australia!5e0!3m2!1sen!2str!4v1696779667343!5m2!1sen!2str"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.293514406262!2d151.0959786764124!3d-33.77465497323865!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12a679d8339089%3A0x5017d681632c030!2sMarsfield%20NSW%202122%2C%20Australia!5e0!3m2!1sen!2str!4v1706879867343!5m2!1sen!2str"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

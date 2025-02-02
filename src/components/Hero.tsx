@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { FaPhoneAlt } from 'react-icons/fa'
+import Link from 'next/link'
 
 export default function Hero() {
   const scrollToHowToOrder = () => {
@@ -15,6 +16,7 @@ export default function Hero() {
       })
     }
   }
+
 
   return (
     <section className="relative h-screen flex items-end pb-28">
@@ -52,9 +54,9 @@ export default function Hero() {
             >
               <span>Request a Quote</span>
             </button>
-            <a 
-              href="tel:+61493324731"
-              className="bg-white text-[#152e1b] px-8 py-3.5 pr-4 pl-4 
+            <Link 
+              href="/contact"
+              className="bg-white text-[#152e1b] px-8 py-4 
                 rounded-lg transition-all duration-300 flex items-center gap-2 font-semibold
                 shadow-lg hover:shadow-xl hover:-translate-y-1.5
                 group-hover/buttons:bg-[#ffd230] hover:!bg-[#ffd230]"
@@ -63,8 +65,8 @@ export default function Hero() {
                 group-hover/buttons:bg-white hover:!bg-white">
                 <FaPhoneAlt className="text-[#152e1b] text-lg" />
               </div>
-              <span>+61 493 324 731</span>
-            </a>
+              <span>Contact Us</span>
+            </Link>
           </div>
         </div>
       </div>

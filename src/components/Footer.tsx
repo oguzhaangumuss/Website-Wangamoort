@@ -146,7 +146,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3 text-sm">
               {[
-                { icon: FaMapMarkerAlt, text: 'Sydney, Australia', href: null },
+                { icon: FaMapMarkerAlt, text: 'Culloden Road Marsfield 2122 NSW Sydney Australia', href: null },
                 { icon: FaPhone, text: '+61 493 324 731', href: 'tel:+61 493 324 731' },
                 { icon: FaWhatsapp, text: 'WhatsApp Contact', href: 'https://wa.me/61493324731', color: 'blue' },
                 { icon: FaEnvelope, text: 'info@wangamoort.com', href: 'mailto:info@wangamoort.com' }

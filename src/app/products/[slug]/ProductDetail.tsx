@@ -173,7 +173,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
             <h1 className="text-3xl font-bold text-gray-900">
               {product.name}
               {selectedVariant?.variant_name && ` - ${selectedVariant.variant_name}`}
-              {product.subcategory?.name && ` ${product.subcategory.name}`}
+
             </h1>
 
             {/* Fiyat

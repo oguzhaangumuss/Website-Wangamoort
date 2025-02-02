@@ -479,6 +479,7 @@ export default function QuotePage() {
                   Additional Notes
                 </label>
                 <textarea
+                  placeholder="Please add any additional information and requirements here or your case id"
                   name="notes"
                   value={formData.notes}
                   onChange={handleChange}

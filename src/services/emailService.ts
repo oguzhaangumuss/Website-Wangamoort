@@ -116,32 +116,52 @@ const createHtmlContent = (quoteData: QuoteData) => `
 `
 
 export async function sendQuoteEmail(quoteData: QuoteData) {
-  const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  })
+  try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    })
 
-  const mailOptions = {
-    from: `"Wangamoort Quote System" <${process.env.SMTP_USER}>`,
-    to: process.env.ADMIN_EMAIL,
-    subject: `New Quote Request - ${quoteData.customer_first_name} ${quoteData.customer_last_name}`,
-    html: createHtmlContent(quoteData)
-  }
+    // Bağlantıyı test et
+    await transporter.verify()
+    console.log('SMTP connection verified')
 
-  // Retry mechanism
-  for (let i = 0; i < 3; i++) {
-    try {
-      console.log(`Email sending attempt ${i + 1}...`)
-      const info = await transporter.sendMail(mailOptions)
-      console.log('Email sent successfully:', info.messageId)
-      return info
-    } catch (error) {
-      console.error(`Attempt ${i + 1} failed:`, error)
-      if (i === 2) throw error
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+    const mailOptions = {
+      from: `"Wangamoort Quote System" <${process.env.SMTP_FROM}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: `New Quote Request - ${quoteData.customer_first_name} ${quoteData.customer_last_name}`,
+      html: createHtmlContent(quoteData)
     }
+
+    // Environment variables'ları kontrol et
+    console.log('Environment Check:', {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      user: process.env.SMTP_USER?.substring(0, 3) + '***',
+      from: process.env.SMTP_FROM?.substring(0, 3) + '***',
+      to: process.env.ADMIN_EMAIL?.substring(0, 3) + '***'
+    })
+
+    // Retry mechanism
+    for (let i = 0; i < 3; i++) {
+      try {
+        console.log(`Email sending attempt ${i + 1}...`)
+        const info = await transporter.sendMail(mailOptions)
+        console.log('Email sent successfully:', info.messageId)
+        return info
+      } catch (error) {
+        console.error(`Attempt ${i + 1} failed:`, error)
+        if (i === 2) throw error
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+      }
+    }
+  } catch (error) {
+    console.error('Email sending failed:', error)
+    throw error
   }
-} 
+}
