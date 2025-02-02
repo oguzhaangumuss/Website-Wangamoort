@@ -116,7 +116,8 @@ export default function CartSlider({ isOpen, onClose }: CartSliderProps) {
                                         </button>
                                       </div>
                                       <p className="mt-1 text-sm text-gray-500">
-                                        {item.color} - {item.size}
+                                        {item.color === "Default" ? '' : item.color + ' Color - ' }  {item.size === 'Standart' ? '' : item.size + ' Size'}
+                                        
                                       </p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">

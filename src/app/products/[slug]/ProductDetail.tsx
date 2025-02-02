@@ -86,7 +86,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
       toast.error('Please select a size')
       return
     }
-    if (!selectedColor) {
+    if (uniqueColors.length > 1 && !selectedColor) {
       toast.error('Please select a color')
       return
     }
@@ -210,7 +210,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
               )}
 
               {/* Renk seçimi */}
-              {uniqueColors && uniqueColors.length > 0 && (
+              { uniqueColors.length > 1 && (
                 <div className="mb-6">
                   <h3 className="text-sm font-medium text-gray-900">Color</h3>
                   <div className="mt-2 flex flex-wrap gap-2">
