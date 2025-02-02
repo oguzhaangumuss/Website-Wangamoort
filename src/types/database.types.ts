@@ -41,6 +41,7 @@ export interface Database {
           stock_status: string
           created_at: string
           updated_at: string
+          is_recommended: boolean
         }
         Insert: {
           subcategory_id: string
@@ -48,6 +49,7 @@ export interface Database {
           slug: string
           description?: string
           stock_status?: string
+          is_recommended?: boolean
         }
       }
       product_variants: {

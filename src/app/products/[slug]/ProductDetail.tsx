@@ -136,6 +136,18 @@ export default function ProductDetail({ product, variant }: { product: Product, 
                 fill
                 className="object-cover"
               />
+              {/* Recommended Product Badge */}
+              {product.is_recommended && (
+                <div className="absolute -top-5 right-0 z-10">
+                  <Image
+                    src="/recomended.png"
+                    alt="Recommended Product"
+                    width={200}
+                    height={200}
+                    className="object-contain"
+                  />
+                </div>
+              )}
             </div>
             
             {/* Küçük Resimler */}
