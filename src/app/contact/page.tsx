@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 
 
 export default function ContactPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,8 +16,10 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
     try {
-      console.log('Sending contact form data:', formData)
+      setIsSubmitting(true)
+      toast.loading('Sending your message...')
       
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -32,7 +35,7 @@ export default function ContactPage() {
         throw new Error(result.error || 'Failed to send message')
       }
 
-      console.log('Email send result:', result)
+      toast.dismiss() // Loading toast'ı kaldır
       toast.success('Message sent successfully!')
       setFormData({ name: '', email: '', phone: '', message: '' })
     } catch (error) {
@@ -41,7 +44,10 @@ export default function ContactPage() {
         formData,
         timestamp: new Date().toISOString()
       })
+      toast.dismiss() // Loading toast'ı kaldır
       toast.error('Failed to send message. Please try again later.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -130,10 +136,14 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="w-full bg-[#ffd230] text-[#152e1b] py-3 px-6 rounded-md 
-                  hover:bg-[#152e1b] hover:text-white transition-colors font-semibold"
+                disabled={isSubmitting}
+                className={`w-full py-3 px-6 rounded-md font-semibold transition-colors
+                  ${isSubmitting 
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-[#ffd230] text-[#152e1b] hover:bg-[#152e1b] hover:text-white'
+                  }`}
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </div>

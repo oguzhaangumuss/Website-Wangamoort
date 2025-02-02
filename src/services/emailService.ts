@@ -155,6 +155,103 @@ const createContactHtmlContent = (formData: ContactFormData) => `
   </div>
 `
 
+// Müşteri için HTML şablonu
+const createCustomerHtmlContent = (quoteData: QuoteData) => `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+    <div style="background-color: #152e1b; padding: 20px; border-radius: 8px 8px 0 0;">
+      <h1 style="color: white; margin: 0; text-align: center;">Thank You for Your Quote Request!</h1>
+    </div>
+    
+    <div style="background-color: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <p style="color: #152e1b; font-size: 16px; line-height: 1.6;">
+        Dear ${quoteData.customer_first_name},
+      </p>
+      
+      <p style="color: #666; line-height: 1.6;">
+        Thank you for choosing Wangamoort! We have received your quote request (Case #${quoteData.case_id}). 
+        Our team will review your request and get back to you with a detailed quote as soon as possible.
+      </p>
+
+      <div style="margin: 30px 0;">
+        <h2 style="color: #152e1b; border-bottom: 2px solid #152e1b; padding-bottom: 10px;">Your Quote Details</h2>
+        
+        <div style="margin-top: 20px;">
+          <h3 style="color: #152e1b; margin-bottom: 10px;">Requested Products</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background-color: #f0f7f1;">
+                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #152e1b;">Product</th>
+                <th style="padding: 12px; text-align: center; border-bottom: 2px solid #152e1b;">Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${quoteData.basket.map(item => `
+                <tr>
+                  <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                    ${item.product_name}<br/>
+                    <span style="color: #666; font-size: 14px;">
+                      ${item.variant_name} (${item.selected_size || '-'}, ${item.selected_color || '-'})
+                    </span>
+                  </td>
+                  <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">
+                    ${item.quantity}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        ${quoteData.is_delivery || quoteData.is_installation || quoteData.is_rubbish_removal ? `
+          <div style="margin-top: 20px;">
+            <h3 style="color: #152e1b; margin-bottom: 10px;">Additional Services</h3>
+            <ul style="list-style: none; padding: 0;">
+              ${quoteData.is_delivery ? `
+                <li style="padding: 8px; margin: 5px 0; background-color: #f0f7f1; border-radius: 4px;">
+                  ✅ Delivery Service
+                </li>
+              ` : ''}
+              ${quoteData.is_installation ? `
+                <li style="padding: 8px; margin: 5px 0; background-color: #f0f7f1; border-radius: 4px;">
+                  ✅ Installation Service
+                </li>
+              ` : ''}
+              ${quoteData.is_rubbish_removal ? `
+                <li style="padding: 8px; margin: 5px 0; background-color: #f0f7f1; border-radius: 4px;">
+                  ✅ Rubbish Removal Service
+                </li>
+              ` : ''}
+            </ul>
+          </div>
+        ` : ''}
+      </div>
+
+      <div style="background-color: #f0f7f1; padding: 15px; border-radius: 4px; margin-top: 30px;">
+        <p style="margin: 0; color: #152e1b;">
+          <strong>What's Next?</strong>
+        </p>
+        <p style="margin: 10px 0 0; color: #666;">
+          Our team will prepare a detailed quote for you. We aim to respond within 24-48 business hours.
+        </p>
+      </div>
+
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="color: #666; margin-bottom: 5px;">
+          <strong>Need assistance?</strong> We're here to help!
+        </p>
+        <p style="color: #666; margin: 0;">
+          📞 Phone: +61 493 324 731<br/>
+          ✉️ Email: info@wangamoort.com
+        </p>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+      <p>This is an automated message from Wangamoort - please do not reply to this email.</p>
+    </div>
+  </div>
+`
+
 export async function sendQuoteEmail(quoteData: QuoteData) {
   try {
     const transporter = nodemailer.createTransport({
@@ -167,33 +264,32 @@ export async function sendQuoteEmail(quoteData: QuoteData) {
       }
     })
 
-    // Bağlantıyı test et
     await transporter.verify()
-    console.log('SMTP connection verified')
-
-    const mailOptions = {
+    
+    // Admin'e gönderilecek mail
+    const adminMailOptions = {
       from: `"Wangamoort Quote System" <${process.env.SMTP_FROM}>`,
       to: process.env.ADMIN_EMAIL,
       subject: `New Quote Request - ${quoteData.customer_first_name} ${quoteData.customer_last_name}`,
       html: createHtmlContent(quoteData)
     }
 
-    // Environment variables'ları kontrol et
-    console.log('Environment Check:', {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER?.substring(0, 3) + '***',
-      from: process.env.SMTP_FROM?.substring(0, 3) + '***',
-      to: process.env.ADMIN_EMAIL?.substring(0, 3) + '***'
-    })
+    // Müşteriye gönderilecek mail
+    const customerMailOptions = {
+      from: `"Wangamoort" <${process.env.SMTP_FROM}>`,
+      to: quoteData.customer_email,
+      subject: `Your Quote Request - Wangamoort (Case #${quoteData.case_id})`,
+      html: createCustomerHtmlContent(quoteData)
+    }
 
-    // Retry mechanism
+    // Her iki maili de gönder
     for (let i = 0; i < 3; i++) {
       try {
         console.log(`Email sending attempt ${i + 1}...`)
-        const info = await transporter.sendMail(mailOptions)
-        console.log('Email sent successfully:', info.messageId)
-        return info
+        await transporter.sendMail(adminMailOptions)
+        await transporter.sendMail(customerMailOptions)
+        console.log('All emails sent successfully')
+        return true
       } catch (error) {
         console.error(`Attempt ${i + 1} failed:`, error)
         if (i === 2) throw error

@@ -52,6 +52,7 @@ export default function QuotePage() {
     }
   })
   const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -147,6 +148,9 @@ export default function QuotePage() {
     }
 
     try {
+      setIsSubmitting(true)
+      toast.loading('Sending your quote request...')
+
       // Database tipine uygun veri hazırlama
       const quoteData: Database['public']['Tables']['quotes']['Insert'] = {
         ...formData,
@@ -162,8 +166,6 @@ export default function QuotePage() {
         status: 'pending'
       }
 
-      console.log('Submitting quote data:', quoteData) // Debug için
-
       const response = await fetch('/api/quotes', {
         method: 'POST',
         headers: {
@@ -174,19 +176,19 @@ export default function QuotePage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        console.error('API Error:', errorData)
         throw new Error(errorData.message || 'Failed to submit quote')
       }
 
       const result = await response.json()
-      console.log('Quote submitted successfully:', result)
-
+      toast.dismiss() // Loading toast'ı kaldır
       toast.success('Quote request submitted successfully!')
       clearCart()
-      router.push('/') // veya başka bir success sayfasına yönlendir
+      router.push('/thank-you')
     } catch (error) {
-      console.error('Error submitting quote:', error)
+      toast.dismiss() // Loading toast'ı kaldır
       toast.error(error instanceof Error ? error.message : 'Failed to submit quote. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -663,10 +665,14 @@ export default function QuotePage() {
               {step === 4 ? (
                 <button 
                   type="submit" 
-                  className="ml-auto px-6 py-2 rounded-md font-semibold transition-colors
-                    bg-[#ffd230] text-[#152e1b] hover:bg-[#152e1b] hover:text-white"
+                  disabled={isSubmitting}
+                  className={`ml-auto px-6 py-2 rounded-md font-semibold transition-colors
+                    ${isSubmitting 
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      : 'bg-[#ffd230] text-[#152e1b] hover:bg-[#152e1b] hover:text-white'
+                    }`}
                 >
-                  Submit Quote Request
+                  {isSubmitting ? 'Sending...' : 'Submit Quote Request'}
                 </button>
               ) : (
                 <button
