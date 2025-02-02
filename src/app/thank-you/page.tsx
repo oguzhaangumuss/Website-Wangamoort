@@ -42,7 +42,7 @@ export default function ThankYouPage() {
             {/* Additional Information */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
               <p className="text-sm text-yellow-800">
-                Please check your email for confirmation. If you don't receive an email within 
+                Please check your email for confirmation. If you don&apos;t receive an email within 
                 the next few minutes, please check your spam folder.
               </p>
             </div>

@@ -175,18 +175,16 @@ export default function QuotePage() {
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to submit quote')
+        throw new Error('Failed to submit quote')
       }
 
-      const result = await response.json()
       toast.dismiss() // Loading toast'ı kaldır
       toast.success('Quote request submitted successfully!')
       clearCart()
       router.push('/thank-you')
     } catch (error) {
       toast.dismiss() // Loading toast'ı kaldır
-      toast.error(error instanceof Error ? error.message : 'Failed to submit quote. Please try again.')
+      toast.error('Failed to submit quote. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
