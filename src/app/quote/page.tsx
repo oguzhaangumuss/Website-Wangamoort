@@ -182,7 +182,7 @@ export default function QuotePage() {
       toast.success('Quote request submitted successfully!')
       clearCart()
       router.push('/thank-you')
-    } catch (error) {
+    } catch {
       toast.dismiss() // Loading toast'ı kaldır
       toast.error('Failed to submit quote. Please try again.')
     } finally {
