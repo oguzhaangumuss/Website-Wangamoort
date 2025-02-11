@@ -1,6 +1,4 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-//import { notFound } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database.types'
 import ProductGrid from '@/components/ProductGrid'
 import NotFound from '@/components/not-found'
@@ -9,17 +7,15 @@ import { Suspense } from 'react'
 
 // Revalidate her saat
 export const revalidate = 3600
+export const fetchCache = 'force-cache'
 
-export const dynamic = 'force-dynamic'
-export const fetchCache = 'force-no-store'
+const supabase = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 async function getSubcategoryWithProducts(slug: string) {
-  const cookieStore = cookies()
-  const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
-  
   try {
-    console.log('Fetching subcategory with slug:', slug)
-
     // Önce subcategory'yi bulalım
     const { data: subcategory, error: subcategoryError } = await supabase
       .from('subcategories')
@@ -27,15 +23,13 @@ async function getSubcategoryWithProducts(slug: string) {
         *,
         category:categories (*)
       `)
-      .eq('slug', slug as string)
+      .eq('slug', slug)
       .single()
 
     if (subcategoryError || !subcategory) {
       console.error('Error fetching subcategory:', subcategoryError)
       return null
     }
-
-    console.log('Found subcategory:', subcategory)
 
     // Sonra bu subcategory'ye ait ürünleri çekelim
     const { data: products, error: productsError } = await supabase
@@ -49,13 +43,12 @@ async function getSubcategoryWithProducts(slug: string) {
         )
       `)
       .eq('subcategory_id', subcategory.id)
+      .limit(50)
 
     if (productsError) {
       console.error('Error fetching products:', productsError)
       return null
     }
-
-    console.log('Found products:', products)
 
     return {
       ...subcategory,
