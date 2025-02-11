@@ -64,6 +64,18 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
                     className="object-cover group-hover:scale-110 transition-transform duration-300"
                     sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 25vw"
                   />
+                  {/* Recommended Badge */}
+                  {product.is_recommended && (
+                    <div className="absolute -top-5 right-0 z-10">
+                      <Image
+                        src="/recomended.png"
+                        alt="Recommended Product"
+                        width={200}
+                        height={200}
+                        className="object-contain"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="p-2 md:p-4">
                   <h3 className="text-base md:text-base lg:text-lg font-semibold text-gray-800 mb-1 md:mb-2 truncate">
