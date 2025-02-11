@@ -62,6 +62,7 @@ export interface Database {
           price: number
           stock_status: string
           created_at: string
+          description?: string | null
         }
         Insert: {
           product_id: string
@@ -70,6 +71,7 @@ export interface Database {
           color: string
           price: number
           stock_status?: string
+          description?: string | null
         }
       }
       product_images: {

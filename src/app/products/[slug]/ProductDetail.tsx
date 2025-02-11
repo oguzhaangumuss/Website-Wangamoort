@@ -81,6 +81,16 @@ export default function ProductDetail({ product, variant }: { product: Product, 
   // Benzersiz resimleri al
   const uniqueImages = getUniqueImages(selectedVariant)
 
+  // Ürün ve variant açıklamalarını birleştir
+  const combinedDescription = useMemo(() => {
+    const baseDescription = product.description || '';
+    const variantDescription = selectedVariant?.description || '';
+    
+    return [baseDescription, variantDescription]
+      .filter(Boolean)  // Boş string'leri filtrele
+      .join('\n\n');   // Araya boş satır ekleyerek birleştir
+  }, [product.description, selectedVariant?.description]);
+
   const handleAddToCart = () => {
     if (uniqueSizes.length > 1 && !selectedSize) {
       toast.error('Please select a size')
@@ -283,11 +293,26 @@ export default function ProductDetail({ product, variant }: { product: Product, 
               <span>Add to Cart</span>
             </button>
 
-            {/* Ürün Açıklaması */}
-            <div className="prose prose-sm max-w-none">
+            {/* Ürün Açıklaması - Güncellendi */}
+            <div className="prose prose-sm max-w-none mt-6">
               <h3 className="text-sm font-medium text-gray-900">Description</h3>
-              <div className="mt-2 text-gray-600 whitespace-pre-line">
-                {product.description}
+              <div className="mt-2 space-y-4">
+                {/* Ana ürün açıklaması */}
+                {product.description && (
+                  <div className="text-gray-600 whitespace-pre-wrap break-words max-w-full">
+                    {product.description}
+                  </div>
+                )}
+                
+                {/* Variant açıklaması - varsa göster */}
+                {selectedVariant?.description && (
+                  <div className="text-gray-600 whitespace-pre-wrap break-words max-w-full border-t pt-4">
+                    <span className="font-medium block mb-2">
+                      {selectedVariant.variant_name || 'Variant'} Details:
+                    </span>
+                    {selectedVariant.description}
+                  </div>
+                )}
               </div>
             </div>
 
