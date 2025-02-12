@@ -318,6 +318,17 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </div>
               </div>
             </div>
+            
+             {/* Seçili varyant bilgisi */}
+             {selectedVariant && (selectedSize !== 'Standart' || selectedColor !== 'Default') && (
+               <div className="mt-4 text-sm text-gray-500">
+                 Selected: 
+                 {selectedSize && selectedSize !== 'Standart' && ` Size: ${selectedSize}`}
+                 {selectedSize && selectedSize !== 'Standart' && 
+                  selectedColor && selectedColor !== 'Default' && ' -'}
+                 {selectedColor && selectedColor !== 'Default' && ` Color: ${selectedColor}`}
+               </div>
+             )}
 
             {/* Add to Cart Butonu - Stok durumuna göre disable edilsin */}
             <button
@@ -350,21 +361,13 @@ export default function ProductDetail({ product }: { product: Product }) {
                 {/* Variant açıklaması - varsa göster */}
                 {selectedVariant?.description && (
                   <div className="text-gray-600 whitespace-pre-wrap break-words max-w-full border-t pt-4">
-                    <span className="font-medium block mb-2">
-                      {selectedVariant.variant_name || 'Variant'} Details:
-                    </span>
                     {selectedVariant.description}
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Seçili varyant bilgisi */}
-            {selectedVariant && (
-              <div className="mt-4 text-sm text-gray-500">
-                Selected: {selectedSize} - {selectedColor}
-              </div>
-            )}
+           
 
             
 
