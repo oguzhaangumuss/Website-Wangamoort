@@ -6,11 +6,10 @@ import type { Database } from '@/types/database.types'
 
 export const revalidate = 3600
 
-// Sayfa parametreleri için interface tanımlıyoruz
-interface PageProps {
-  params: {
-    slug: string
-  }
+// Next.js 13+ için doğru tip tanımlaması
+type Props = {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 async function getProduct(slug: string) {
@@ -49,8 +48,8 @@ async function getProduct(slug: string) {
   }
 }
 
-// Sadece params kullanıyoruz
-export default async function ProductPage({ params }: PageProps) {
+// searchParams'ı ekliyoruz ama kullanmıyoruz
+export default async function ProductPage({ params, searchParams }: Props) {
   const { slug } = params
   console.log('Requested slug:', slug) // Debug için ekleyelim
   
