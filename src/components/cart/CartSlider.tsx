@@ -3,7 +3,6 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-import type { CartItem } from '@/types/database.types'
 import Image from 'next/image'
 import { useCart } from '@/contexts/CartContext'
 

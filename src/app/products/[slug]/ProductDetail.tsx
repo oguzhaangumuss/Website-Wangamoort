@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { IoArrowBack, IoClose } from "react-icons/io5"
-import type { Database, ProductVariant,CartItem } from '@/types/database.types'
+import type { Database, CartItem } from '@/types/database.types'
 import { useCart } from '@/contexts/CartContext'
 
 
@@ -18,7 +18,7 @@ type Product = Database['public']['Tables']['products']['Row'] & {
   })[]
 }
 
-export default function ProductDetail({ product, variant }: { product: Product, variant: typeof product.variants[0] }) {
+export default function ProductDetail({ product }: { product: Product }) {
   const { addToCart } = useCart()
   
   // Sadece stokta olan varyantları filtrele
@@ -85,7 +85,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
   }, [selectedVariant])
 
   // Tekrarlanan resimleri filtrele
-  const getUniqueImages = (variant: ProductVariant | undefined) => {
+  const getUniqueImages = (variant: Database['public']['Tables']['product_variants']['Row'] & { images: Database['public']['Tables']['product_images']['Row'][] } | undefined) => {
     if (!variant?.images) return []
     
     const uniqueUrls = new Set()
