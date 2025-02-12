@@ -11,7 +11,6 @@ interface PageProps {
   params: {
     slug: string
   }
-  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 async function getProduct(slug: string) {
@@ -50,8 +49,8 @@ async function getProduct(slug: string) {
   }
 }
 
-// PageProps tipini kullanıyoruz
-export default async function ProductPage({ params, searchParams }: PageProps) {
+// Sadece params kullanıyoruz
+export default async function ProductPage({ params }: PageProps) {
   const { slug } = params
   console.log('Requested slug:', slug) // Debug için ekleyelim
   
