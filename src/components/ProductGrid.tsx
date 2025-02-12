@@ -4,11 +4,13 @@ import Link from 'next/link'
 import { Product, ProductVariant, ProductImage, Subcategory } from '@/types/database.types'
 
 // Genişletilmiş Product tipi
-interface ExtendedProduct extends Product {
+interface ExtendedProduct extends Omit<Product, 'stock_status'> {
   variants?: (ProductVariant & {
     images?: ProductImage[]
+    description?: string | null
   })[]
   subcategory?: Subcategory
+  stock_status?: string
 }
 
 type ProductGridProps = {
@@ -17,6 +19,9 @@ type ProductGridProps = {
 }
 
 export default function ProductGrid({ products, title }: ProductGridProps) {
+  // Debug için ürünleri kontrol edelim
+  console.log('Products in Grid:', products)
+
   return (
     <div>
       {/* Hero Section */}
@@ -45,9 +50,13 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-3 md:grid-cols-4  gap-2 gap-2 sm:gap-4 md:gap-6">
           {products.map((product) => {
-            const defaultImage = product.variants?.[0]?.images?.find(
+            // Variant kontrolünü geliştir
+            const firstVariant = product.variants?.[0]
+            const defaultImage = firstVariant?.images?.find(
               (img): img is ProductImage => img.is_default
-            )?.url || '/placeholder.jpg'
+            )?.url || firstVariant?.images?.[0]?.url || '/placeholder.jpg'
+            
+            console.log('Product:', product.name, 'First Variant:', firstVariant)
             
             return (
               <Link
