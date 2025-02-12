@@ -19,8 +19,13 @@ type ProductGridProps = {
 }
 
 export default function ProductGrid({ products, title }: ProductGridProps) {
-  // Debug için ürünleri kontrol edelim
-  console.log('Products in Grid:', products)
+  // Stokta olan ürünleri filtrele
+  const availableProducts = products.filter(product => {
+    // En az bir varyantın stokta olup olmadığını kontrol et
+    return product.variants?.some(variant => 
+      variant.stock_status === 'in_stock' || variant.stock_status === 'available'
+    )
+  })
 
   return (
     <div>
@@ -49,13 +54,16 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-3 md:grid-cols-4 gap-2 gap-2 sm:gap-4 md:gap-6">
-          {products.map((product) => {
-            const firstVariant = product.variants?.[0]
-            const defaultImage = firstVariant?.images?.find(
+          {availableProducts.map((product) => {
+            // Stokta olan ilk varyantı bul
+            const availableVariant = product.variants?.find(variant => 
+              variant.stock_status === 'in_stock' || variant.stock_status === 'available'
+            )
+
+            // Eğer stokta olan varyant varsa, onun resmini göster
+            const defaultImage = availableVariant?.images?.find(
               (img): img is ProductImage => img.is_default
-            )?.url || firstVariant?.images?.[0]?.url || '/placeholder.jpg'
-            
-            console.log('Product:', product.name, 'First Variant:', firstVariant)
+            )?.url || availableVariant?.images?.[0]?.url || '/placeholder.jpg'
             
             return (
               <Link

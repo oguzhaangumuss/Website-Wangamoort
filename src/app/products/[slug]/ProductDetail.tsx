@@ -20,32 +20,51 @@ type Product = Database['public']['Tables']['products']['Row'] & {
 
 export default function ProductDetail({ product, variant }: { product: Product, variant: typeof product.variants[0] }) {
   const { addToCart } = useCart()
-  const [selectedImage, setSelectedImage] = useState(
-    variant?.images?.find(img => img.is_default)?.url ||
-    variant?.images?.[0]?.url
-  )
-  const [isFullScreen, setIsFullScreen] = useState(false)
-
-  // Benzersiz size ve renkleri başlangıçta hesapla
-  const uniqueSizes = [...new Set(product.variants?.map(v => v.size))]
-  const uniqueColors = useMemo(() => 
-    [...new Set(product.variants?.map(v => v.color))],
+  
+  // Sadece stokta olan varyantları filtrele
+  const availableVariants = useMemo(() => 
+    product.variants?.filter(v => 
+      v.stock_status === 'in_stock' || v.stock_status === 'available'
+    ) || [], 
     [product.variants]
   )
 
-  const [selectedSize, setSelectedSize] = useState<string>(() => {
-    return uniqueSizes.length === 1 ? uniqueSizes[0] : ''
-  })
-  const [selectedColor, setSelectedColor] = useState<string>('')
+  // İlk stokta olan varyantı bul
+  const firstAvailableVariant = useMemo(() => 
+    availableVariants[0], 
+    [availableVariants]
+  )
+
+  // Stokta olan varyantlardan benzersiz size ve renkleri hesapla
+  const uniqueSizes = useMemo(() => 
+    [...new Set(availableVariants.map(v => v.size))],
+    [availableVariants]
+  )
+
+  const uniqueColors = useMemo(() => 
+    [...new Set(availableVariants.map(v => v.color))],
+    [availableVariants]
+  )
+
+  // İlk varyantın size ve color değerlerini başlangıç değeri olarak kullan
+  const [selectedSize, setSelectedSize] = useState<string>(firstAvailableVariant?.size || '')
+  const [selectedColor, setSelectedColor] = useState<string>(firstAvailableVariant?.color || '')
   const [quantity, setQuantity] = useState(1)
 
-  // Seçili kombinasyona göre varyantı bul
+  // Seçili varyantın resmini başlangıç değeri olarak ayarla
+  const [selectedImage, setSelectedImage] = useState(
+    firstAvailableVariant?.images?.find(img => img.is_default)?.url ||
+    firstAvailableVariant?.images?.[0]?.url
+  )
+  const [isFullScreen, setIsFullScreen] = useState(false)
+
+  // Seçili kombinasyona göre stokta olan varyantı bul
   const selectedVariant = useMemo(() => {
-    return product.variants?.find(v => 
+    return availableVariants.find(v => 
       v.size === selectedSize && 
       v.color === selectedColor
-    )
-  }, [product.variants, selectedSize, selectedColor])
+    ) || firstAvailableVariant // Eğer seçili kombinasyon bulunamazsa ilk varyantı kullan
+  }, [availableVariants, selectedSize, selectedColor, firstAvailableVariant])
 
   // Component mount olduğunda veya size değiştiğinde ilk rengi seç
   useEffect(() => {
@@ -81,6 +100,11 @@ export default function ProductDetail({ product, variant }: { product: Product, 
 
   // Benzersiz resimleri al
   const uniqueImages = getUniqueImages(selectedVariant)
+
+  // Sepete ekle butonu için stok kontrolü
+  const isOutOfStock = !selectedVariant || 
+    (selectedVariant.stock_status !== 'in_stock' && 
+     selectedVariant.stock_status !== 'available')
 
   const handleAddToCart = () => {
     if (uniqueSizes.length > 1 && !selectedSize) {
@@ -226,7 +250,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
 
             {/* Varyant Seçimi */}
             <div className="space-y-4">
-              {/* Size seçimi sadece birden fazla size varsa gösterilsin */}
+              {/* Size seçimi sadece stokta olan size'lar için gösterilsin */}
               {uniqueSizes.length > 1 && (
                 <div className="mb-6">
                   <h3 className="text-sm font-medium text-gray-900">Size</h3>
@@ -250,8 +274,8 @@ export default function ProductDetail({ product, variant }: { product: Product, 
                 </div>
               )}
 
-              {/* Renk seçimi */}
-              { uniqueColors.length > 1 && (
+              {/* Renk seçimi sadece stokta olan renkler için */}
+              {uniqueColors.length > 1 && (
                 <div className="mb-6">
                   <h3 className="text-sm font-medium text-gray-900">Color</h3>
                   <div className="mt-2 flex flex-wrap gap-2">
@@ -295,21 +319,21 @@ export default function ProductDetail({ product, variant }: { product: Product, 
               </div>
             </div>
 
-            {/* Add to Cart Butonu */}
+            {/* Add to Cart Butonu - Stok durumuna göre disable edilsin */}
             <button
               onClick={handleAddToCart}
-              className="w-full mt-6 bg-[#152e1b] text-white py-3 px-8 rounded-md 
-                hover:bg-[#1f4429] transition-colors flex items-center justify-center space-x-2"
+              disabled={isOutOfStock}
+              className={`w-full mt-6 py-3 px-8 rounded-md transition-colors 
+                flex items-center justify-center space-x-2
+                ${isOutOfStock 
+                  ? 'bg-gray-300 cursor-not-allowed' 
+                  : 'bg-[#152e1b] text-white hover:bg-[#1f4429]'
+                }`}
             >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-5 w-5" 
-                viewBox="0 0 20 20" 
-                fill="currentColor"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
               </svg>
-              <span>Add to Cart</span>
+              <span>{isOutOfStock ? 'Out of Stock' : 'Add to Cart'}</span>
             </button>
 
             {/* Ürün Açıklaması - Ana ürün ve Variant */}
