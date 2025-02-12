@@ -6,6 +6,14 @@ import type { Database } from '@/types/database.types'
 
 export const revalidate = 3600
 
+// Sayfa parametreleri için interface tanımlıyoruz
+interface PageProps {
+  params: {
+    slug: string
+  }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
 async function getProduct(slug: string) {
   const cookieStore = cookies()
   const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
@@ -42,8 +50,8 @@ async function getProduct(slug: string) {
   }
 }
 
-// DOĞRU
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+// PageProps tipini kullanıyoruz
+export default async function ProductPage({ params, searchParams }: PageProps) {
   const { slug } = params
   console.log('Requested slug:', slug) // Debug için ekleyelim
   
