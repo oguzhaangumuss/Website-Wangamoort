@@ -1,28 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { FaWhatsapp, FaShoppingCart } from 'react-icons/fa'
 import content from '../../public/content.json'
 import CartSlider from './cart/CartSlider'
 import Image from 'next/image'
+import { useCart } from '@/contexts/CartContext'
 
 export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false)
-  const [cartItemCount, setCartItemCount] = useState(0)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { cart } = useCart()
 
-  // Cart item sayısını güncelle
-  useEffect(() => {
-    const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]')
-      setCartItemCount(cart.length)
-    }
-
-    updateCartCount()
-    window.addEventListener('storage', updateCartCount)
-    return () => window.removeEventListener('storage', updateCartCount)
-  }, [])
+  const cartItemCount = cart.length
 
   return (
     <header className="bg-white shadow-sm fixed w-full top-0 z-50">
@@ -106,7 +97,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center space-x-5 md:hidden">
-            <button onClick={() => setIsCartOpen(true)} className="relative">
+            <button onClick={() => setIsCartOpen(true)} className="relative md:hidden">
               <FaShoppingCart className="text-2xl text-blue-600" />
               {cartItemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">

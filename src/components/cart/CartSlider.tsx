@@ -1,10 +1,11 @@
 'use client'
 
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
 import type { CartItem } from '@/types/database.types'
 import Image from 'next/image'
+import { useCart } from '@/contexts/CartContext'
 
 interface CartSliderProps {
   isOpen: boolean
@@ -12,28 +13,7 @@ interface CartSliderProps {
 }
 
 export default function CartSlider({ isOpen, onClose }: CartSliderProps) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-
-  useEffect(() => {
-    // localStorage'dan sepet verilerini al
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]')
-    setCartItems(cart)
-  }, [isOpen]) // Slider her açıldığında güncel verileri al
-
-  const removeFromCart = (variantId: string) => {
-    const updatedCart = cartItems.filter(item => item.variant_id !== variantId)
-    localStorage.setItem('cart', JSON.stringify(updatedCart))
-    setCartItems(updatedCart)
-  }
-
-  const updateQuantity = (variantId: string, newQuantity: number) => {
-    if (newQuantity < 1) return
-    const updatedCart = cartItems.map(item => 
-      item.variant_id === variantId ? { ...item, quantity: newQuantity } : item
-    )
-    localStorage.setItem('cart', JSON.stringify(updatedCart))
-    setCartItems(updatedCart)
-  }
+  const { cart, removeFromCart, updateQuantity } = useCart()
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -84,14 +64,14 @@ export default function CartSlider({ isOpen, onClose }: CartSliderProps) {
 
                       <div className="mt-8">
                         <div className="flow-root">
-                          {cartItems.length === 0 ? (
+                          {cart.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12">
                               <ShoppingBagIcon className="h-12 w-12 text-gray-400" />
                               <p className="mt-4 text-sm text-gray-500">Your cart is empty</p>
                             </div>
                           ) : (
                             <ul role="list" className="-my-6 divide-y divide-gray-200">
-                              {cartItems.map((item) => (
+                              {cart.map((item) => (
                                 <li key={item.variant_id} className="flex py-6">
                                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                     <Image
@@ -109,28 +89,28 @@ export default function CartSlider({ isOpen, onClose }: CartSliderProps) {
                                         <h3>{item.name + ' - ' + item.variant_name + ' ' + item.subcategory_name}</h3>
                                         <button
                                           type="button"
-                                          onClick={() => removeFromCart(item.variant_id)}
+                                          onClick={() => removeFromCart(item.product_id)}
                                           className="text-gray-400 hover:text-gray-500"
                                         >
                                           <XMarkIcon className="h-5 w-5" />
                                         </button>
                                       </div>
                                       <p className="mt-1 text-sm text-gray-500">
-                                        {item.color === "Default" ? '' : item.color + ' Color - ' }  {item.size === 'Standart' ? '' : item.size + ' Size'}
-                                        
+                                        {item.color === "Default" ? '' : item.color + ' Color - ' }  
+                                        {item.size === 'Standart' ? '' : item.size + ' Size'}
                                       </p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">
                                       <div className="flex items-center">
                                         <button
-                                          onClick={() => updateQuantity(item.variant_id, item.quantity - 1)}
+                                          onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
                                           className="px-2 py-1 text-gray-500 hover:text-gray-700"
                                         >
                                           -
                                         </button>
                                         <span className="mx-2 text-gray-700">{item.quantity}</span>
                                         <button
-                                          onClick={() => updateQuantity(item.variant_id, item.quantity + 1)}
+                                          onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
                                           className="px-2 py-1 text-gray-500 hover:text-gray-700"
                                         >
                                           +
