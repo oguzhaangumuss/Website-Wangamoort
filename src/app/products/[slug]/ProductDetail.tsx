@@ -81,16 +81,6 @@ export default function ProductDetail({ product, variant }: { product: Product, 
   // Benzersiz resimleri al
   const uniqueImages = getUniqueImages(selectedVariant)
 
-  // Ürün ve variant açıklamalarını birleştir
-  const combinedDescription = useMemo(() => {
-    const baseDescription = product.description || '';
-    const variantDescription = selectedVariant?.description || '';
-    
-    return [baseDescription, variantDescription]
-      .filter(Boolean)  // Boş string'leri filtrele
-      .join('\n\n');   // Araya boş satır ekleyerek birleştir
-  }, [product.description, selectedVariant?.description]);
-
   const handleAddToCart = () => {
     if (uniqueSizes.length > 1 && !selectedSize) {
       toast.error('Please select a size')
@@ -293,7 +283,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
               <span>Add to Cart</span>
             </button>
 
-            {/* Ürün Açıklaması - Güncellendi */}
+            {/* Ürün Açıklaması - Ana ürün ve Variant */}
             <div className="prose prose-sm max-w-none mt-6">
               <h3 className="text-sm font-medium text-gray-900">Description</h3>
               <div className="mt-2 space-y-4">
