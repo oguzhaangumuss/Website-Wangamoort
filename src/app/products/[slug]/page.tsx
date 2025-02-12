@@ -43,12 +43,8 @@ async function getProduct(slug: string) {
 }
 
 // DOĞRU
-export default async function ProductPage({ 
-  params 
-}: { 
-  params: Promise<{ slug: string }> 
-}) {
-  const { slug } = await params
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const { slug } = params
   console.log('Requested slug:', slug) // Debug için ekleyelim
   
   const product = await getProduct(slug)
@@ -57,5 +53,5 @@ export default async function ProductPage({
     notFound()
   }
 
-  return <ProductDetail product={product} variant={product.variants?.[0]} />
+  return <ProductDetail product={product} />
 }
