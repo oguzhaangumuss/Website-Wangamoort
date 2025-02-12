@@ -48,9 +48,8 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
 
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-3 md:grid-cols-4  gap-2 gap-2 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-2 gap-2 sm:gap-4 md:gap-6">
           {products.map((product) => {
-            // Variant kontrolünü geliştir
             const firstVariant = product.variants?.[0]
             const defaultImage = firstVariant?.images?.find(
               (img): img is ProductImage => img.is_default
@@ -65,12 +64,12 @@ export default function ProductGrid({ products, title }: ProductGridProps) {
                 className="group bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md 
                   overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
-                <div className="aspect-square relative overflow-hidden">
+                <div className="relative pt-[100%]">
                   <Image
                     src={defaultImage}
                     alt={product.name}
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    className="object-contain p-2"
                     sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 25vw"
                   />
                   {/* Recommended Badge */}

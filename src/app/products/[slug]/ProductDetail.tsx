@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { IoArrowBack } from "react-icons/io5"
+import { IoArrowBack, IoClose } from "react-icons/io5"
 import type { Database, ProductVariant,CartItem } from '@/types/database.types'
 import { useCart } from '@/contexts/CartContext'
 
@@ -24,6 +24,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
     variant?.images?.find(img => img.is_default)?.url ||
     variant?.images?.[0]?.url
   )
+  const [isFullScreen, setIsFullScreen] = useState(false)
 
   // Benzersiz size ve renkleri başlangıçta hesapla
   const uniqueSizes = [...new Set(product.variants?.map(v => v.size))]
@@ -115,6 +116,30 @@ export default function ProductDetail({ product, variant }: { product: Product, 
 
   return (
     <main className="pt-24">
+      {/* Full Screen Modal */}
+      {isFullScreen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          onClick={() => setIsFullScreen(false)}
+        >
+          <button 
+            className="absolute top-4 right-4 text-white hover:text-gray-300"
+            onClick={() => setIsFullScreen(false)}
+          >
+            <IoClose className="w-8 h-8" />
+          </button>
+          <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+            <Image
+              src={selectedImage || '/placeholder.jpg'}
+              alt={product.name}
+              fill
+              className="object-contain"
+              quality={100}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4">
         <Link
           href="/products"
@@ -129,14 +154,18 @@ export default function ProductDetail({ product, variant }: { product: Product, 
           {/* Sol: Resim Galerisi */}
           <div className="space-y-4">
             {/* Ana Resim */}
-            <div className="relative aspect-square rounded-lg overflow-hidden">
+            <div 
+              className="relative aspect-square rounded-lg overflow-hidden cursor-pointer"
+              onClick={() => setIsFullScreen(true)}
+            >
               <Image
-                src={selectedImage || '/images/about-us/quality/qualityYellow4.jpg'}
+                src={selectedImage || '/placeholder.jpg'}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className="object-contain p-2"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
-              {/* Recommended Product Badge */}
+              {/* Recommended Badge */}
               {product.is_recommended && (
                 <div className="absolute -top-5 right-0 z-10">
                   <Image
@@ -163,7 +192,7 @@ export default function ProductDetail({ product, variant }: { product: Product, 
                     src={image.url}
                     alt={image.alt}
                     fill
-                    className="object-cover"
+                    className="object-contain p-1"
                   />
                 </button>
               ))}
