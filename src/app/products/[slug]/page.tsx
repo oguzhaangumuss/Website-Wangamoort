@@ -6,10 +6,10 @@ import type { Database } from '@/types/database.types'
 
 export const revalidate = 3600
 
-// Next.js 13+ için doğru tip tanımlaması
+// Her iki parametre de Promise olmalı
 type Props = {
-  params: { slug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 async function getProduct(slug: string) {
@@ -48,11 +48,9 @@ async function getProduct(slug: string) {
   }
 }
 
-// searchParams'ı ekliyoruz ama kullanmıyoruz
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function ProductPage({ params, searchParams }: Props) {
-  const { slug } = params
-  console.log('Requested slug:', slug) // Debug için ekleyelim
-  
+  const { slug } = await params
   const product = await getProduct(slug)
   
   if (!product) {
