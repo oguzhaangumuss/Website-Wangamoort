@@ -5,9 +5,10 @@ import NotFound from '@/components/not-found'
 import ProductSkeleton from '@/components/skeletons/ProductSkeleton'
 import { Suspense } from 'react'
 
-// Revalidate her saat
-export const revalidate = 3600
-export const fetchCache = 'force-cache'
+// Cache ve revalidation ayarlarını güncelleyelim
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,7 +17,9 @@ const supabase = createClient<Database>(
 
 async function getSubcategoryWithProducts(slug: string) {
   try {
-    // Önce subcategory'yi bulalım
+    // Debug için log ekleyelim
+    console.log('Fetching subcategory:', slug)
+
     const { data: subcategory, error: subcategoryError } = await supabase
       .from('subcategories')
       .select(`
@@ -27,11 +30,13 @@ async function getSubcategoryWithProducts(slug: string) {
       .single()
 
     if (subcategoryError || !subcategory) {
-      console.error('Error fetching subcategory:', subcategoryError)
+      console.error('Subcategory error:', subcategoryError)
       return null
     }
 
-    // Sonra bu subcategory'ye ait ürünleri çekelim
+    console.log('Found subcategory:', subcategory.id)
+
+    // Ürün sorgusunu güncelleyelim
     const { data: products, error: productsError } = await supabase
       .from('products')
       .select(`
@@ -43,12 +48,15 @@ async function getSubcategoryWithProducts(slug: string) {
         )
       `)
       .eq('subcategory_id', subcategory.id)
-      .limit(50)
+      // .eq('stock_status', 'in_stock')  // Bu filtreyi kaldıralım
+      .order('created_at', { ascending: false }) // En yeni ürünler önce gelsin
 
     if (productsError) {
-      console.error('Error fetching products:', productsError)
+      console.error('Products error:', productsError)
       return null
     }
+
+    console.log('Found products count:', products?.length)
 
     return {
       ...subcategory,
