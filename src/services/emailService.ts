@@ -1,7 +1,8 @@
 import nodemailer from 'nodemailer'
 import { QuoteData } from '@/types/quote.types'
-import {  } from '@/types/database.types'
-import { ContactFormData } from '../types/contact.types'
+import { ContactFormData } from '@/types/contact.types'
+
+const BUSINESS_EMAIL = 'business@wangamoort.com.au'
 
 const createHtmlContent = (quoteData: QuoteData) => `
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -252,53 +253,57 @@ const createCustomerHtmlContent = (quoteData: QuoteData) => `
   </div>
 `
 
+// Ortak transporter yapılandırması
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: true,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    },
+    tls: {
+      rejectUnauthorized: true,
+      minVersion: 'TLSv1.2'
+    }
+  })
+}
+
 export async function sendQuoteEmail(quoteData: QuoteData) {
-  try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 1000; // 1 saniye
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const transporter = createTransporter();
+      await transporter.verify();
+
+      const [adminResult, customerResult] = await Promise.all([
+        transporter.sendMail({
+          from: `"Wangamoort Quote System" <${BUSINESS_EMAIL}>`,
+          to: BUSINESS_EMAIL,
+          subject: `New Quote Request - ${quoteData.customer_first_name} ${quoteData.customer_last_name}`,
+          html: createHtmlContent(quoteData)
+        }),
+        transporter.sendMail({
+          from: `"Wangamoort" <${BUSINESS_EMAIL}>`,
+          to: quoteData.customer_email,
+          subject: `Your Quote Request - Wangamoort (Case #${quoteData.case_id})`,
+          html: createCustomerHtmlContent(quoteData)
+        })
+      ]);
+
+      return { adminResult, customerResult };
+    } catch (error) {
+      console.error(`Email sending attempt ${attempt} failed:`, error);
+      
+      if (attempt === MAX_RETRIES) {
+        throw new Error(`Failed to send email after ${MAX_RETRIES} attempts: ${error.message}`);
       }
-    })
-
-    await transporter.verify()
-    
-    // Admin'e gönderilecek mail
-    const adminMailOptions = {
-      from: `"Wangamoort Quote System" <${process.env.SMTP_FROM}>`,
-      to: process.env.ADMIN_EMAIL,
-      subject: `New Quote Request - ${quoteData.customer_first_name} ${quoteData.customer_last_name}`,
-      html: createHtmlContent(quoteData)
+      
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * attempt));
     }
-
-    // Müşteriye gönderilecek mail
-    const customerMailOptions = {
-      from: `"Wangamoort" <${process.env.SMTP_FROM}>`,
-      to: quoteData.customer_email,
-      subject: `Your Quote Request - Wangamoort (Case #${quoteData.case_id})`,
-      html: createCustomerHtmlContent(quoteData)
-    }
-
-    // Her iki maili de gönder
-    for (let i = 0; i < 3; i++) {
-      try {
-        console.log(`Email sending attempt ${i + 1}...`)
-        await transporter.sendMail(adminMailOptions)
-        await transporter.sendMail(customerMailOptions)
-        console.log('All emails sent successfully')
-        return true
-      } catch (error) {
-        console.error(`Attempt ${i + 1} failed:`, error)
-        if (i === 2) throw error
-        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
-      }
-    }
-  } catch (error) {
-    console.error('Email sending failed:', error)
-    throw error
   }
 }
 
@@ -312,16 +317,28 @@ export async function sendContactEmail(formData: ContactFormData) {
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
-      }
+      },
+      tls: {
+        rejectUnauthorized: false,
+        ciphers: 'SSLv3',
+        secureProtocol: 'TLSv1_method'
+      },
+      debug: true,
+      logger: true
     })
 
-    console.log('Verifying SMTP connection...')
-    await transporter.verify()
-    console.log('SMTP connection verified')
+    console.log('Testing SMTP connection with these settings:', {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      user: process.env.SMTP_USER
+    });
+    
+    await transporter.verify();
+    console.log('SMTP connection test successful');
 
     const mailOptions = {
-      from: `"Wangamoort Contact Form" <${process.env.SMTP_FROM}>`,
-      to: process.env.ADMIN_EMAIL,
+      from: `"Wangamoort Contact Form" <${BUSINESS_EMAIL}>`,
+      to: BUSINESS_EMAIL,
       subject: `New Contact Form Submission - ${formData.name}`,
       html: createContactHtmlContent(formData)
     }
@@ -360,6 +377,46 @@ export async function sendContactEmail(formData: ContactFormData) {
         from: process.env.SMTP_FROM?.substring(0, 3) + '***'
       }
     })
+    throw error
+  }
+}
+
+// Test fonksiyonu ekleyelim
+async function testSMTPConnection() {
+  const config = {
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: true,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  }
+
+  console.log('Testing SMTP connection with config:', {
+    ...config,
+    auth: {
+      user: config.auth.user,
+      pass: '****' // şifreyi gizliyoruz
+    }
+  })
+
+  try {
+    const transporter = nodemailer.createTransport(config)
+    await transporter.verify()
+    console.log('SMTP connection successful!')
+    
+    // Basit bir test maili gönderelim
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: process.env.SMTP_USER,
+      subject: 'SMTP Test',
+      text: 'If you receive this email, SMTP is working!'
+    })
+    
+    console.log('Test email sent:', info.messageId)
+  } catch (error) {
+    console.error('SMTP test failed:', error)
     throw error
   }
 }

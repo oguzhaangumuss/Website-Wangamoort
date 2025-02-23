@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import ProductDetail from './ProductDetail'
 import type { Database } from '@/types/database.types'
+import { Metadata } from 'next'
 
 export const revalidate = 3600
 
@@ -58,4 +59,24 @@ export default async function ProductPage({ params, searchParams }: Props) {
   }
 
   return <ProductDetail product={product} />
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const product = await getProduct(params.slug)
+  
+  return {
+    title: `${product.name} - Wangamoort Furniture`,
+    description: product.description || 'Quality furniture product from Wangamoort, Sydney\'s leading furniture supplier.',
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: product.variants?.[0]?.images?.[0]?.url ? [
+        {
+          url: product.variants[0].images[0].url,
+          width: 1200,
+          height: 630,
+        }
+      ] : [],
+    }
+  }
 }
