@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   description: 'We specialize in delivering tailored furniture and appliance solutions for businesses and institutions such as NDIS providers, real estate agencies, Airbnb hosts.',
   icons: {
     icon: [
+      { rel: 'shortcut icon', url: '/favicon.ico' },
       { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico' }
+      { url: '/favicon.svg', type: 'image/svg+xml' }
     ],
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180' }
@@ -59,16 +59,21 @@ export const metadata: Metadata = {
     description: 'We specialize in delivering tailored furniture and appliance solutions for businesses and institutions.',
     url: 'https://wangamoort.com.au',
     siteName: 'Wangamoort Furniture',
-    images: [
-      {
-        url: '/homepage.png', // Logo veya ana sayfa görseliniz
-        width: 1200,
-        height: 630,
-        alt: 'Wangamoort Furniture'
-      }
-    ],
+    images: [{
+      url: '/homepage2.png',
+      width: 1200,
+      height: 630,
+      alt: 'Wangamoort Furniture Showcase'
+    }],
     locale: 'en_AU',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Wangamoort - Wholesale Furniture',
+    description: 'We specialize in delivering tailored furniture and appliance solutions for businesses and institutions.',
+    images: ['/homepage2.png'],
+    creator: '@wangamoort'
   },
   robots: {
     index: true,
