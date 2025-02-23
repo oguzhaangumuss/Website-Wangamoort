@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     siteName: 'Wangamoort',
     images: [
       {
-        url: '/favicon-96x96.png', // Geçici olarak favicon'u kullanıyoruz
-        width: 96,
-        height: 96,
+        url: '/logo3.png', // Favicon yerine logo kullanıyoruz
+        width: 300,
+        height: 300,
         alt: 'Wangamoort Logo',
       },
     ],
@@ -54,7 +54,32 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head />
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "url": "https://wangamoort.com.au",
+              "logo": "https://wangamoort.com.au/logo3.png",
+              "name": "Wangamoort",
+              "description": "Wholesale Furniture and Appliance Solutions",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Sydney",
+                "addressRegion": "NSW",
+                "addressCountry": "AU"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+61-493-324-731", // Telefon numaranızı ekleyin
+                "contactType": "sales"
+              }
+            })
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <CartProvider>
           <Navbar />
