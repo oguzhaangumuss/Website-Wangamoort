@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { Metadata } from 'next'
 
 export default function AboutPage() {
   const sections = [
@@ -82,4 +83,9 @@ export default function AboutPage() {
       </section>
     </main>
   )
+}
+
+export const metadata: Metadata = {
+  title: 'About Us | Our Story & Mission',
+  description: 'Learn about Wangamoort Furniture, Sydney\'s trusted wholesale furniture supplier. Quality products and exceptional service since establishment.',
 } 
