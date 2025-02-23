@@ -9,19 +9,62 @@ import { CartProvider } from '@/contexts/CartContext'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Wangamoort - Wholesale Furniture Supplier in Sydney',
-  description: 'Leading wholesale furniture supplier in Sydney. Quality furniture, appliances, and home decor at competitive prices. Commercial and residential solutions.',
-  keywords: 'wholesale furniture, Sydney furniture supplier, commercial furniture, office furniture, home furniture, furniture wholesale, Australian furniture supplier',
+  metadataBase: new URL('https://wangamoort.com.au'),
+  title: {
+    template: '%s | Wangamoort Furniture',
+    default: 'Wangamoort - Wholesale Furniture Supplier in Sydney'
+  },
+  description: 'We specialize in delivering tailored furniture and appliance solutions for businesses and institutions such as NDIS providers, real estate agencies, Airbnb hosts.',
+  icons: {
+    icon: [
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' }
+    ],
+    other: [
+      {
+        rel: 'mask-icon',
+        url: '/safari-pinned-tab.svg',
+        color: '#152e1b'
+      }
+    ]
+  },
+  manifest: '/site.webmanifest',
+  appleWebApp: {
+    title: 'Wangamoort',
+    statusBarStyle: 'default'
+  },
+  keywords: [
+    // Marka varyasyonları
+    'wangamoort', 'wangamort', 'vangamoort', 'vangamort',
+    // Ana hizmetler
+    'wholesale furniture', 'furniture supplier sydney',
+    // Lokasyon bazlı
+    'sydney furniture', 'nsw furniture supplier', 'australian furniture wholesaler',
+    // Hedef kitle
+    'commercial furniture sydney', 'business furniture supplier',
+    'ndis furniture provider', 'airbnb furniture supplier',
+    // Ürün kategorileri
+    'office furniture sydney', 'home furniture wholesale',
+    'commercial furniture wholesale', 'bulk furniture orders',
+    // Hizmet alanları
+    'furniture delivery sydney', 'furniture installation service',
+    'commercial fitout sydney', 'office furniture solutions'
+  ].join(', '),
   openGraph: {
-    title: 'Wangamoort - Wholesale Furniture Supplier in Sydney',
-    description: 'Leading wholesale furniture supplier in Sydney. Quality furniture, appliances, and home decor at competitive prices.',
+    title: 'Wangamoort - Wholesale Furniture',
+    description: 'We specialize in delivering tailored furniture and appliance solutions for businesses and institutions.',
     url: 'https://wangamoort.com.au',
     siteName: 'Wangamoort Furniture',
     images: [
       {
-        url: 'https://wangamoort.com.au/og-image.jpg', // Ana sayfa görseli ekleyin
+        url: '/homepage.png', // Logo veya ana sayfa görseliniz
         width: 1200,
         height: 630,
+        alt: 'Wangamoort Furniture'
       }
     ],
     locale: 'en_AU',
@@ -38,8 +81,11 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  alternates: {
+    canonical: 'https://wangamoort.com.au'
+  },
   verification: {
-    google: 'Google Search Console doğrulama kodu',
+    google: 'Google Search Console doğrulama kodu buraya gelecek'
   }
 }
 
@@ -50,6 +96,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head />
       <body className={inter.className}>
         <CartProvider>
           <Navbar />
