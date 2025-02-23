@@ -7,7 +7,7 @@ import { Metadata } from 'next'
 
 export const revalidate = 3600
 
-// Her iki parametre de Promise olmalı
+// Props tipini PageProps constraint'ine uygun hale getirelim
 type Props = {
   params: Promise<{ slug: string }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -18,8 +18,6 @@ async function getProduct(slug: string) {
   const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
   
   try {
-    console.log('Fetching product with slug:', slug)
-
     const { data: product, error } = await supabase
       .from('products')
       .select(`
@@ -37,11 +35,10 @@ async function getProduct(slug: string) {
       .single()
 
     if (error) {
-      console.error('Error details:', error)
+      console.error('Error fetching product:', error)
       return null
     }
 
-    console.log('Found product:', product)
     return product
   } catch (error) {
     console.error('Error:', error)
@@ -49,8 +46,8 @@ async function getProduct(slug: string) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default async function ProductPage({ params, searchParams }: Props) {
+// Ve kullanımını da buna göre güncelleyelim
+export default async function ProductPage({ params }: Props) {
   const { slug } = await params
   const product = await getProduct(slug)
   
@@ -61,15 +58,24 @@ export default async function ProductPage({ params, searchParams }: Props) {
   return <ProductDetail product={product} />
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const product = await getProduct(params.slug)
+// generateMetadata için de aynı şekilde Promise tipini kullanalım
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  
+  if (!product) {
+    return {
+      title: 'Product Not Found - Wangamoort Furniture',
+      description: 'The requested product could not be found.',
+    }
+  }
   
   return {
     title: `${product.name} - Wangamoort Furniture`,
     description: product.description || 'Quality furniture product from Wangamoort, Sydney\'s leading furniture supplier.',
     openGraph: {
       title: product.name,
-      description: product.description,
+      description: product.description || '',
       images: product.variants?.[0]?.images?.[0]?.url ? [
         {
           url: product.variants[0].images[0].url,

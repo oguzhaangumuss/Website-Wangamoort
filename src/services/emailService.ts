@@ -299,7 +299,7 @@ export async function sendQuoteEmail(quoteData: QuoteData) {
       console.error(`Email sending attempt ${attempt} failed:`, error);
       
       if (attempt === MAX_RETRIES) {
-        throw new Error(`Failed to send email after ${MAX_RETRIES} attempts: ${error.message}`);
+        throw new Error(`Failed to send email after ${MAX_RETRIES} attempts: ${error instanceof Error ? error.message : String(error)}`);
       }
       
       await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * attempt));
@@ -309,32 +309,8 @@ export async function sendQuoteEmail(quoteData: QuoteData) {
 
 export async function sendContactEmail(formData: ContactFormData) {
   try {
-    console.log('Creating email transporter...')
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      },
-      tls: {
-        rejectUnauthorized: false,
-        ciphers: 'SSLv3',
-        secureProtocol: 'TLSv1_method'
-      },
-      debug: true,
-      logger: true
-    })
-
-    console.log('Testing SMTP connection with these settings:', {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER
-    });
-    
+    const transporter = createTransporter();
     await transporter.verify();
-    console.log('SMTP connection test successful');
 
     const mailOptions = {
       from: `"Wangamoort Contact Form" <${BUSINESS_EMAIL}>`,
@@ -343,80 +319,12 @@ export async function sendContactEmail(formData: ContactFormData) {
       html: createContactHtmlContent(formData)
     }
 
-    console.log('Mail options prepared:', {
-      from: mailOptions.from,
-      to: mailOptions.to,
-      subject: mailOptions.subject
-    })
-
-    // Retry mechanism
-    for (let i = 0; i < 3; i++) {
-      try {
-        console.log(`Email sending attempt ${i + 1}...`)
-        const info = await transporter.sendMail(mailOptions)
-        console.log('Contact email sent successfully:', info.messageId)
-        return info
-      } catch (error) {
-        console.error(`Attempt ${i + 1} failed:`, {
-          error,
-          attempt: i + 1,
-          timestamp: new Date().toISOString()
-        })
-        if (i === 2) throw error
-        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
-      }
-    }
+    const info = await transporter.sendMail(mailOptions)
+    return info
   } catch (error) {
-    console.error('Contact email sending failed:', {
-      error,
-      formData,
-      env: {
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        user: process.env.SMTP_USER?.substring(0, 3) + '***',
-        from: process.env.SMTP_FROM?.substring(0, 3) + '***'
-      }
-    })
+    console.error('Contact email sending failed:', error)
     throw error
   }
 }
 
-// Test fonksiyonu ekleyelim
-async function testSMTPConnection() {
-  const config = {
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: true,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  }
 
-  console.log('Testing SMTP connection with config:', {
-    ...config,
-    auth: {
-      user: config.auth.user,
-      pass: '****' // şifreyi gizliyoruz
-    }
-  })
-
-  try {
-    const transporter = nodemailer.createTransport(config)
-    await transporter.verify()
-    console.log('SMTP connection successful!')
-    
-    // Basit bir test maili gönderelim
-    const info = await transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: process.env.SMTP_USER,
-      subject: 'SMTP Test',
-      text: 'If you receive this email, SMTP is working!'
-    })
-    
-    console.log('Test email sent:', info.messageId)
-  } catch (error) {
-    console.error('SMTP test failed:', error)
-    throw error
-  }
-}
