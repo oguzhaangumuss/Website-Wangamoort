@@ -242,7 +242,7 @@ const createCustomerHtmlContent = (quoteData: QuoteData) => `
         </p>
         <p style="color: #666; margin: 0;">
           📞 Phone: +61 493 324 731<br/>
-          ✉️ Email: info@wangamoort.com
+          ✉️ Email: Business@wangamoort.com.au
         </p>
       </div>
     </div>
