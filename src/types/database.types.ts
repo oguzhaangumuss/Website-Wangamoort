@@ -205,3 +205,14 @@ export type ProductsResponse = ApiResponse<Product[]>
 export type ProductVariantsResponse = ApiResponse<ProductVariant[]>
 export type ProductImagesResponse = ApiResponse<ProductImage[]>
 export type QuoteResponse = ApiResponse<Quote>
+
+export type Supplier = {
+  id: number
+  name: string
+  contact_person?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  created_at?: string
+  updated_at?: string
+}
