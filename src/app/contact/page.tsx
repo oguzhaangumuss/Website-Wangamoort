@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from 'react-icons/fa'
 import { toast } from 'sonner'
-import { Metadata } from 'next'
-
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -200,8 +198,3 @@ export default function ContactPage() {
     </main>
   )
 }
-
-export const metadata: Metadata = {
-  title: 'Contact Us | Get in Touch',
-  description: 'Contact Wangamoort Furniture for inquiries about our wholesale furniture. Visit our Sydney showroom or reach out via phone, email, or WhatsApp.',
-} 

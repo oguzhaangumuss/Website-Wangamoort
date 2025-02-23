@@ -5,7 +5,6 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import ProductList from './ProductList'
 import ProductSkeleton from '@/components/skeletons/ProductSkeleton'
 import { Database } from '@/types/database.types'
-import { Metadata } from 'next'
 
 type Subcategory = {
   id: string
@@ -93,9 +92,4 @@ export default function ProductsPage() {
       categories={categories} 
     />
   )
-}
-
-export const metadata: Metadata = {
-  title: 'Products | Premium Furniture Collection',
-  description: 'Browse our extensive collection of high-quality furniture. From living room to bedroom, find the perfect pieces for your space.',
 }
