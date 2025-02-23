@@ -1,4 +1,5 @@
-/** @type {import('next').NextConfig} */
+import { NextConfig } from "next";
+
 const nextConfig = {
   images: {
     domains: ['wangamoort-product-images.s3.eu-north-1.amazonaws.com'],
