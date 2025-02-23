@@ -149,7 +149,7 @@ export default function Footer() {
                 { icon: FaMapMarkerAlt, text: 'Culloden Road Marsfield 2122 NSW Sydney Australia', href: null },
                 { icon: FaPhone, text: '+61 493 324 731', href: 'tel:+61 493 324 731' },
                 { icon: FaWhatsapp, text: 'WhatsApp Contact', href: 'https://wa.me/61493324731', color: 'blue' },
-                { icon: FaEnvelope, text: 'info@wangamoort.com', href: 'mailto:info@wangamoort.com' }
+                { icon: FaEnvelope, text: 'Business@wangamoort.com.au', href: 'mailto:Business@wangamoort.com.au' }
               ].map((item, index) => (
                 <li key={index} className="flex items-center space-x-3 group">
                   <div className="bg-blue-500/10 p-2 rounded-full group-hover:bg-blue-500/20 transition-colors">
