@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Toaster } from 'sonner'
 import { CartProvider } from '@/contexts/CartContext'
+import content from '../..//public/content.json'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -61,10 +62,11 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
+              "@id": "https://wangamoort.com.au",
               "url": "https://wangamoort.com.au",
               "logo": "https://wangamoort.com.au/logo3.png",
               "name": "Wangamoort",
-              "description": "Wholesale Furniture and Appliance Solutions",
+              "description": "Wholesale Furniture and Professional Services",
               "address": {
                 "@type": "PostalAddress",
                 "addressLocality": "Sydney",
@@ -75,6 +77,24 @@ export default function RootLayout({
                 "@type": "ContactPoint",
                 "telephone": "+61-493-324-731", // Telefon numaranızı ekleyin
                 "contactType": "sales"
+              },
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Products and Services",
+                "itemListElement": [
+                  ...content.services.map(service => ({
+                    "@type": "Service",
+                    "name": service.title,
+                    "description": service.description.split('\n\n')[0],
+                    "url": `https://wangamoort.com.au/services/${service.slug}`
+                  })),
+                  {
+                    "@type": "ProductCollection",
+                    "name": "Furniture Collection",
+                    "description": "High-quality wholesale furniture for businesses",
+                    "url": "https://wangamoort.com.au/products"
+                  }
+                ]
               }
             })
           }}
