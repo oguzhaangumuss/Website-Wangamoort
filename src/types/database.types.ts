@@ -115,6 +115,7 @@ export interface Database {
             state: string
             postcode: string
           }
+          case_id?: string
           status: string
           created_at: string
           updated_at: string
@@ -142,6 +143,7 @@ export interface Database {
             state: string
             postcode: string
           }
+          case_id?: string
           status?: string
         }
       }
@@ -178,6 +180,7 @@ export interface QuoteFormData {
     state: string
     postcode: string
   }
+  case_id?: string
 }
 
 // Sepet Elemanı Tipi

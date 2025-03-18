@@ -1,194 +1,218 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { toast } from 'sonner'
-import Link from 'next/link'
-import { FaShoppingCart } from 'react-icons/fa'
-import { useCart } from '@/contexts/CartContext'
-import type { Database, QuoteFormData } from '@/types/database.types'
-import { CheckCircleIcon } from '@heroicons/react/24/outline'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import { useState } from "react";
+import { toast } from "sonner";
+import Link from "next/link";
+import { FaShoppingCart } from "react-icons/fa";
+import { useCart } from "@/contexts/CartContext";
+import type { Database, QuoteFormData } from "@/types/database.types";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const additionalServices = [
   {
-    id: 'delivery',
-    name: 'Delivery Service',
-    description: 'Professional delivery to your doorstep',
-    image: '/images/services/delivery/delivery2.jpeg'
+    id: "delivery",
+    name: "Delivery Service",
+    description: "Professional delivery to your doorstep",
+    image: "/images/services/delivery/delivery2.jpeg",
   },
   {
-    id: 'installation',
-    name: 'Installation Service',
-    description: 'Expert assembly and installation',
-    image: '/images/services/installation.jpg'
+    id: "installation",
+    name: "Installation Service",
+    description: "Expert assembly and installation",
+    image: "/images/services/installation.jpg",
   },
   {
-    id: 'rubbish_removal',
-    name: 'Rubbish Removal',
-    description: 'Complete cleanup and disposal service',
-    image: '/images/services/rubbish/rubbish.png'
-  }
-]
+    id: "rubbish_removal",
+    name: "Rubbish Removal",
+    description: "Complete cleanup and disposal service",
+    image: "/images/services/rubbish/rubbish.png",
+  },
+];
 
 export default function QuotePage() {
-  const { cart, clearCart } = useCart()
-  const [step, setStep] = useState(1)
+  const { cart, clearCart } = useCart();
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<QuoteFormData>({
-    company_name: '',
-    customer_first_name: '',
-    customer_last_name: '',
-    customer_email: '',
-    customer_phone: '',
-    notes: '',
+    company_name: "",
+    customer_first_name: "",
+    customer_last_name: "",
+    customer_email: "",
+    customer_phone: "",
+    notes: "",
     is_rubbish_removal: false,
     is_installation: false,
     is_delivery: false,
     delivery_address: {
-      street: '',
-      city: '',
-      state: '',
-      postcode: ''
-    }
-  })
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+      street: "",
+      city: "",
+      state: "",
+      postcode: "",
+    },
+  });
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target
-    
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.')
-      if (parent === 'delivery_address') {
-        setFormData(prev => ({
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      if (parent === "delivery_address") {
+        setFormData((prev) => ({
           ...prev,
           delivery_address: {
-            ...(prev.delivery_address || { street: '', city: '', state: '', postcode: '' }),
-            [child]: value
-          }
-        }))
+            ...(prev.delivery_address || {
+              street: "",
+              city: "",
+              state: "",
+              postcode: "",
+            }),
+            [child]: value,
+          },
+        }));
       }
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-      }))
+        [name]:
+          type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      }));
     }
-  }
+  };
 
   const handleNextStep = (e: React.MouseEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Her adımda form doğrulama
-    switch(step) {
+    switch (step) {
       case 1:
         if (cart.length === 0) {
-          toast.error('Your cart is empty!')
-          return
+          toast.error("Your cart is empty!");
+          return;
         }
-        break
+        break;
       case 2:
-        if (!formData.customer_first_name || !formData.customer_last_name || 
-            !formData.customer_email || !formData.customer_phone) {
-          toast.error('Please fill in all required personal information!')
-          return
+        if (
+          !formData.customer_first_name ||
+          !formData.customer_last_name ||
+          !formData.customer_email ||
+          !formData.customer_phone
+        ) {
+          toast.error("Please fill in all required personal information!");
+          return;
         }
-        break
+        break;
       case 3:
-        if (formData.is_delivery && (!formData.delivery_address?.street || 
-            !formData.delivery_address?.city || !formData.delivery_address?.state || 
-            !formData.delivery_address?.postcode)) {
-          toast.error('Please fill in all delivery address fields!')
-          return
+        if (
+          formData.is_delivery &&
+          (!formData.delivery_address?.street ||
+            !formData.delivery_address?.city ||
+            !formData.delivery_address?.state ||
+            !formData.delivery_address?.postcode)
+        ) {
+          toast.error("Please fill in all delivery address fields!");
+          return;
         }
-        break
+        break;
     }
 
     if (step < 4) {
-      setStep(step + 1)
+      setStep(step + 1);
     }
-  }
+  };
 
   const validateForm = () => {
     // Step 1: Cart kontrolü
     if (cart.length === 0) {
-      toast.error('Your cart is empty!')
-      return false
+      toast.error("Your cart is empty!");
+      return false;
     }
 
     // Step 2: Kişisel bilgiler kontrolü
-    if (!formData.customer_first_name || !formData.customer_last_name || 
-        !formData.customer_email || !formData.customer_phone) {
-      toast.error('Please fill in all required personal information!')
-      return false
+    if (
+      !formData.customer_first_name ||
+      !formData.customer_last_name ||
+      !formData.customer_email ||
+      !formData.customer_phone
+    ) {
+      toast.error("Please fill in all required personal information!");
+      return false;
     }
 
     // Step 3: Teslimat seçili ise adres kontrolü
     if (formData.is_delivery) {
-      if (!formData.delivery_address?.street || !formData.delivery_address?.city || 
-          !formData.delivery_address?.state || !formData.delivery_address?.postcode) {
-        toast.error('Please fill in all delivery address fields!')
-        return false
+      if (
+        !formData.delivery_address?.street ||
+        !formData.delivery_address?.city ||
+        !formData.delivery_address?.state ||
+        !formData.delivery_address?.postcode
+      ) {
+        toast.error("Please fill in all delivery address fields!");
+        return false;
       }
     }
 
-    return true
-  }
+    return true;
+  };
 
   const handleSubmitQuote = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (step !== 4) {
-      return
+      return;
     }
 
     // Form doğrulama
     if (!validateForm()) {
-      return
+      return;
     }
 
     try {
-      setIsSubmitting(true)
-      toast.loading('Sending your quote request...')
+      setIsSubmitting(true);
+      toast.loading("Sending your quote request...");
 
       // Database tipine uygun veri hazırlama
-      const quoteData: Database['public']['Tables']['quotes']['Insert'] = {
+      const quoteData: Database["public"]["Tables"]["quotes"]["Insert"] = {
         ...formData,
-        basket: cart.map(item => ({
+        basket: cart.map((item) => ({
           product_id: item.product_id,
           quantity: item.quantity,
           selected_size: item.size,
           selected_color: item.color,
           price: item.price,
           product_name: item.name,
-          variant_name: item.variant_name
+          variant_name: item.variant_name,
         })),
-        status: 'pending'
-      }
+        status: "pending",
+      };
 
-      const response = await fetch('/api/quotes', {
-        method: 'POST',
+      const response = await fetch("/api/quotes", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(quoteData),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to submit quote')
+        throw new Error("Failed to submit quote");
       }
 
-      toast.dismiss() // Loading toast'ı kaldır
-      toast.success('Quote request submitted successfully!')
-      clearCart()
-      router.push('/thank-you')
+      toast.dismiss(); // Loading toast'ı kaldır
+      toast.success("Quote request submitted successfully!");
+      clearCart();
+      router.push("/thank-you");
     } catch {
-      toast.dismiss() // Loading toast'ı kaldır
-      toast.error('Failed to submit quote. Please try again.')
+      toast.dismiss(); // Loading toast'ı kaldır
+      toast.error("Failed to submit quote. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (cart.length === 0) {
     return (
@@ -205,7 +229,7 @@ export default function QuotePage() {
               <p className="text-gray-600 mb-8">
                 Add some products to your cart to request a quote.
               </p>
-              <Link 
+              <Link
                 href="/products"
                 className="inline-block px-6 py-3 bg-[#ffd230] text-[#152e1b] rounded-md
                   hover:bg-[#152e1b] hover:text-white transition-colors font-semibold"
@@ -216,7 +240,7 @@ export default function QuotePage() {
           </div>
         </div>
       </main>
-    )
+    );
   }
 
   const renderStep = () => {
@@ -224,19 +248,31 @@ export default function QuotePage() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-[#152e1b]">Review Your Cart</h2>
+            <h2 className="text-2xl font-semibold text-[#152e1b]">
+              Review Your Cart
+            </h2>
             <div className="space-y-4">
               {/* Cart Items */}
               <div className="border rounded-lg overflow-hidden">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Product</th>
-                      <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">Size</th>
-                      <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">Color</th>
-                      <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">Quantity</th>
-                      {cart.some(item => item.price > 0) && (
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">Price</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                        Product
+                      </th>
+                      <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                        Size
+                      </th>
+                      <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                        Color
+                      </th>
+                      <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                        Quantity
+                      </th>
+                      {cart.some((item) => item.price > 0) && (
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">
+                          Price
+                        </th>
                       )}
                     </tr>
                   </thead>
@@ -253,34 +289,53 @@ export default function QuotePage() {
                               className="w-16 h-16 object-cover rounded"
                             />
                             <div className="ml-4">
-                              <div className="font-medium text-gray-900">{item.name}</div>
-                              <div className="text-sm text-gray-500">{item.variant_name}</div>
+                              <div className="font-medium text-gray-900">
+                                {item.name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {item.variant_name}
+                              </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-4 py-4 text-center text-sm text-gray-500">
-                          {item.size || '-'}
+                          {item.size || "-"}
                         </td>
                         <td className="px-4 py-4 text-center text-sm text-gray-500">
-                          {item.color || '-'}
+                          {item.color || "-"}
                         </td>
                         <td className="px-4 py-4 text-center text-sm text-gray-500">
                           {item.quantity}
                         </td>
-                        {cart.some(item => item.price > 0) && (
+                        {cart.some((item) => item.price > 0) && (
                           <td className="px-4 py-4 text-right text-sm font-medium text-gray-900">
-                            {item.price > 0 ? `$${item.price.toFixed(2)}` : '-'}
+                            {item.price > 0 ? `$${item.price.toFixed(2)}` : "-"}
                           </td>
                         )}
                       </tr>
                     ))}
                   </tbody>
-                  {cart.some(item => item.price > 0) && (
+                  {cart.some((item) => item.price > 0) && (
                     <tfoot className="bg-gray-50">
                       <tr>
-                        <td colSpan={4} className="px-4 py-3 text-right font-semibold">Total:</td>
+                        <td
+                          colSpan={4}
+                          className="px-4 py-3 text-right font-semibold"
+                        >
+                          Total:
+                        </td>
                         <td className="px-4 py-3 text-right font-semibold text-[#152e1b]">
-                          ${cart.reduce((total, item) => total + (item.price > 0 ? item.price * item.quantity : 0), 0).toFixed(2)}
+                          $
+                          {cart
+                            .reduce(
+                              (total, item) =>
+                                total +
+                                (item.price > 0
+                                  ? item.price * item.quantity
+                                  : 0),
+                              0
+                            )
+                            .toFixed(2)}
                         </td>
                       </tr>
                     </tfoot>
@@ -290,16 +345,25 @@ export default function QuotePage() {
 
               {/* Additional Services */}
               <div className="mt-10">
-                <h2 className="text-2xl font-semibold mb-6">Additional Services</h2>
+                <h2 className="text-2xl font-semibold mb-6">
+                  Additional Services
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {additionalServices.map((service) => (
-                    <div 
+                    <div
                       key={service.id}
                       className={`relative overflow-hidden rounded-lg border-2 transition-all duration-200 
-                        ${formData[service.id === 'rubbish_removal' ? 'is_rubbish_removal' : 
-                          service.id === 'installation' ? 'is_installation' : 'is_delivery'] 
-                          ? 'border-[var(--primary-color)] bg-[var(--primary-color)]/10' 
-                          : 'border-gray-200 hover:border-gray-300'}`}
+                        ${
+                          formData[
+                            service.id === "rubbish_removal"
+                              ? "is_rubbish_removal"
+                              : service.id === "installation"
+                              ? "is_installation"
+                              : "is_delivery"
+                          ]
+                            ? "border-[var(--primary-color)] bg-[var(--primary-color)]/10"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
                     >
                       <div className="aspect-w-16 aspect-h-9">
                         <Image
@@ -312,17 +376,31 @@ export default function QuotePage() {
                       </div>
                       <div className="p-4">
                         <h3 className="text-lg font-medium">{service.name}</h3>
-                        <p className="text-gray-600 mt-1">{service.description}</p>
+                        <p className="text-gray-600 mt-1">
+                          {service.description}
+                        </p>
                         <label className="flex items-center mt-4 cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={formData[service.id === 'rubbish_removal' ? 'is_rubbish_removal' : 
-                              service.id === 'installation' ? 'is_installation' : 'is_delivery']}
-                            onChange={(e) => setFormData(prev => ({
-                              ...prev,
-                              [service.id === 'rubbish_removal' ? 'is_rubbish_removal' : 
-                                service.id === 'installation' ? 'is_installation' : 'is_delivery']: e.target.checked
-                            }))}
+                            checked={
+                              formData[
+                                service.id === "rubbish_removal"
+                                  ? "is_rubbish_removal"
+                                  : service.id === "installation"
+                                  ? "is_installation"
+                                  : "is_delivery"
+                              ]
+                            }
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                [service.id === "rubbish_removal"
+                                  ? "is_rubbish_removal"
+                                  : service.id === "installation"
+                                  ? "is_installation"
+                                  : "is_delivery"]: e.target.checked,
+                              }))
+                            }
                             className="w-4 h-4 text-[var(--primary-color)] border-gray-300 rounded 
                               focus:ring-[var(--primary-color)]"
                           />
@@ -335,12 +413,14 @@ export default function QuotePage() {
               </div>
             </div>
           </div>
-        )
-      
+        );
+
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-[#152e1b]">Personal Information</h2>
+            <h2 className="text-2xl font-semibold text-[#152e1b]">
+              Personal Information
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -413,12 +493,14 @@ export default function QuotePage() {
               </div>
             </div>
           </div>
-        )
+        );
 
       case 3:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-[#152e1b]">Delivery Information</h2>
+            <h2 className="text-2xl font-semibold text-[#152e1b]">
+              Delivery Information
+            </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -474,12 +556,34 @@ export default function QuotePage() {
                     focus:ring-[#152e1b] focus:border-transparent outline-none"
                 />
               </div>
+
+              {/* Order ID (Case ID) field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Order ID (Case ID){" "}
+                  <span className="text-gray-400 text-xs">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  name="case_id"
+                  value={formData.case_id || ""}
+                  onChange={handleChange}
+                  placeholder="Enter your own Order ID if needed"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 
+                    focus:ring-[#152e1b] focus:border-transparent outline-none"
+                />
+                <p className="mt-1 text-sm text-gray-500">
+                  If you already have an Order ID or Case ID, you can enter it
+                  here. Otherwise, we&apos;ll create one for you.
+                </p>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Additional Notes
                 </label>
                 <textarea
-                  placeholder="Please add any additional information and requirements here or your case id"
+                  placeholder="Please add any additional information and requirements here"
                   name="notes"
                   value={formData.notes}
                   onChange={handleChange}
@@ -490,19 +594,24 @@ export default function QuotePage() {
               </div>
             </div>
           </div>
-        )
+        );
 
       case 4:
         return (
           <div className="space-y-8">
-            <h2 className="text-2xl font-semibold text-[#152e1b]">Review Your Quote Request</h2>
-            
+            <h2 className="text-2xl font-semibold text-[#152e1b]">
+              Review Your Quote Request
+            </h2>
+
             {/* Cart Summary */}
             <div className="bg-gray-50 rounded-lg p-6">
               <h3 className="text-lg font-medium mb-4">Cart Summary</h3>
               <div className="divide-y divide-gray-200">
                 {cart.map((item) => (
-                  <div key={`${item.variant_id}-${item.size}-${item.color}`} className="py-4 flex items-center">
+                  <div
+                    key={`${item.variant_id}-${item.size}-${item.color}`}
+                    className="py-4 flex items-center"
+                  >
                     <Image
                       src={item.image}
                       alt={item.name}
@@ -515,7 +624,9 @@ export default function QuotePage() {
                       <p className="text-sm text-gray-600">
                         {item.variant_name} - {item.size}, {item.color}
                       </p>
-                      <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                      <p className="text-sm text-gray-600">
+                        Quantity: {item.quantity}
+                      </p>
                     </div>
                     {item.price > 0 && (
                       <p className="font-medium">${item.price.toFixed(2)}</p>
@@ -547,9 +658,13 @@ export default function QuotePage() {
                     Rubbish Removal Service
                   </div>
                 )}
-                {!formData.is_delivery && !formData.is_installation && !formData.is_rubbish_removal && (
-                  <p className="text-gray-500">No additional services selected</p>
-                )}
+                {!formData.is_delivery &&
+                  !formData.is_installation &&
+                  !formData.is_rubbish_removal && (
+                    <p className="text-gray-500">
+                      No additional services selected
+                    </p>
+                  )}
               </div>
             </div>
 
@@ -559,7 +674,9 @@ export default function QuotePage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Name</p>
-                  <p className="font-medium">{formData.customer_first_name} {formData.customer_last_name}</p>
+                  <p className="font-medium">
+                    {formData.customer_first_name} {formData.customer_last_name}
+                  </p>
                 </div>
                 {formData.company_name && (
                   <div>
@@ -581,13 +698,27 @@ export default function QuotePage() {
             {/* Delivery Information */}
             {formData.delivery_address && (
               <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-medium mb-4">Delivery Information</h3>
+                <h3 className="text-lg font-medium mb-4">
+                  Delivery Information
+                </h3>
                 <div className="space-y-2">
-                  <p className="font-medium">{formData.delivery_address.street}</p>
                   <p className="font-medium">
-                    {formData.delivery_address.city}, {formData.delivery_address.state} {formData.delivery_address.postcode}
+                    {formData.delivery_address.street}
+                  </p>
+                  <p className="font-medium">
+                    {formData.delivery_address.city},{" "}
+                    {formData.delivery_address.state}{" "}
+                    {formData.delivery_address.postcode}
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* Case ID */}
+            {formData.case_id && (
+              <div className="bg-gray-50 rounded-lg p-6">
+                <h3 className="text-lg font-medium mb-4">Order ID (Case ID)</h3>
+                <p className="font-medium">{formData.case_id}</p>
               </div>
             )}
 
@@ -602,14 +733,15 @@ export default function QuotePage() {
             {/* Confirmation Message */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
               <p className="text-sm text-yellow-800">
-                Please review all the information above carefully. Once you submit your quote request, 
-                our team will review it and get back to you with a detailed quote as soon as possible.
+                Please review all the information above carefully. Once you
+                submit your quote request, our team will review it and get back
+                to you with a detailed quote as soon as possible.
               </p>
             </div>
           </div>
-        )
+        );
     }
-  }
+  };
 
   return (
     <main className="pt-24 pb-16 bg-[#F9F9F9] min-h-screen">
@@ -617,9 +749,12 @@ export default function QuotePage() {
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4 text-[#152e1b]">Request a Quote</h1>
+            <h1 className="text-4xl font-bold mb-4 text-[#152e1b]">
+              Request a Quote
+            </h1>
             <p className="text-gray-600">
-              Review your cart and fill out the form below for a customized quote.
+              Review your cart and fill out the form below for a customized
+              quote.
             </p>
           </div>
 
@@ -629,24 +764,44 @@ export default function QuotePage() {
               <div
                 key={stepNumber}
                 className={`flex-1 text-center relative ${
-                  stepNumber < 4 ? 'after:content-[""] after:h-1 after:w-full after:absolute after:top-4 after:left-1/2 after:bg-gray-200' : ''
+                  stepNumber < 4
+                    ? 'after:content-[""] after:h-1 after:w-full after:absolute after:top-4 after:left-1/2 after:bg-gray-200'
+                    : ""
                 }`}
               >
                 <div
                   className={`w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center relative z-10 
-                    ${step >= stepNumber ? 'bg-[#152e1b] text-white' : 'bg-gray-200 text-gray-400'}`}
+                    ${
+                      step >= stepNumber
+                        ? "bg-[#152e1b] text-white"
+                        : "bg-gray-200 text-gray-400"
+                    }`}
                 >
                   {stepNumber}
                 </div>
-                <div className={`text-sm ${step >= stepNumber ? 'text-[#152e1b]' : 'text-gray-400'}`}>
-                  {['Review Cart', 'Personal Info', 'Delivery', 'Confirmation'][stepNumber - 1]}
+                <div
+                  className={`text-sm ${
+                    step >= stepNumber ? "text-[#152e1b]" : "text-gray-400"
+                  }`}
+                >
+                  {
+                    [
+                      "Review Cart",
+                      "Personal Info",
+                      "Delivery",
+                      "Confirmation",
+                    ][stepNumber - 1]
+                  }
                 </div>
               </div>
             ))}
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmitQuote} className="bg-white rounded-lg shadow-lg p-8">
+          <form
+            onSubmit={handleSubmitQuote}
+            className="bg-white rounded-lg shadow-lg p-8"
+          >
             {renderStep()}
 
             <div className="flex justify-between mt-8">
@@ -661,16 +816,17 @@ export default function QuotePage() {
                 </button>
               )}
               {step === 4 ? (
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className={`ml-auto px-6 py-2 rounded-md font-semibold transition-colors
-                    ${isSubmitting 
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-[#ffd230] text-[#152e1b] hover:bg-[#152e1b] hover:text-white'
+                    ${
+                      isSubmitting
+                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : "bg-[#ffd230] text-[#152e1b] hover:bg-[#152e1b] hover:text-white"
                     }`}
                 >
-                  {isSubmitting ? 'Sending...' : 'Submit Quote Request'}
+                  {isSubmitting ? "Sending..." : "Submit Quote Request"}
                 </button>
               ) : (
                 <button
@@ -678,9 +834,10 @@ export default function QuotePage() {
                   onClick={handleNextStep}
                   disabled={cart.length === 0}
                   className={`ml-auto px-6 py-2 rounded-md font-semibold transition-colors
-                    ${cart.length === 0 
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-[#ffd230] text-[#152e1b] hover:bg-[#152e1b] hover:text-white'
+                    ${
+                      cart.length === 0
+                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : "bg-[#ffd230] text-[#152e1b] hover:bg-[#152e1b] hover:text-white"
                     }`}
                 >
                   Next
@@ -691,5 +848,5 @@ export default function QuotePage() {
         </div>
       </div>
     </main>
-  )
-} 
+  );
+}
