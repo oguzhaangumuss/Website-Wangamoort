@@ -54,18 +54,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Önce başarılı yanıt dönelim
+    // Başarılı yanıtı önceden hazırlayalım
     const response = NextResponse.json(
       { message: 'Quote created successfully', data },
       { status: 201 }
     )
 
-    // E-posta gönderme işlemini asenkron olarak gerçekleştir
-    // Bu işlem yanıt döndükten sonra arka planda devam edecek
-    sendQuoteEmail(data)
-      .then(() => console.log('Email sent successfully'))
-      .catch(emailError => console.error('Email error (background):', emailError))
+    // E-posta gönderme işlemini yanıt döndürmeden önce tamamlayalım
+    try {
+      console.log('Sending email...')
+      await sendQuoteEmail(data)
+      console.log('Email sent successfully')
+    } catch (emailError) {
+      console.error('Email error:', emailError)
+      // E-posta hatası olsa bile yanıt başarılı
+    }
 
+    // Hazırladığımız yanıtı dönelim
     return response
 
   } catch (error) {
